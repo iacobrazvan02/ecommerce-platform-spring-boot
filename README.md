@@ -14,7 +14,7 @@ Full-stack e-commerce platform developed as my bachelor's thesis.
 - JavaScript
 - Python
 - Random Forest
-- Google API STUDIO
+- Google AI STUDIO
 
 ## Features
 
@@ -30,7 +30,7 @@ Full-stack e-commerce platform developed as my bachelor's thesis.
 ## Recommendation System
 
 The application includes a product recommendation system developed
-in Python using a Random Forest model and an AI assistent developed with Google AI STUDIO
+in Python using a Random Forest model and an AI assistant developed with Google AI STUDIO
 
 ## Architecture
 
