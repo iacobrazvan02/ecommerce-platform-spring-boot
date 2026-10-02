@@ -53,4 +53,4 @@ in the application configuration.
 ### Start the application
 
 ```bash
-./gradlew bootRun
+./mvnw spring-boot:run
