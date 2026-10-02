@@ -91,10 +91,10 @@ def get_prediction():
             return
 
         df['popularity_score'] = (
-            df['total_qty_sold'] * 5          # vânzările au ponderea cea mai mare
-            + df['view_count'] / 50           # vizualizările aduc bonus
-            + df['wishlist_count'] * 3        # wishlist = intenție de cumpărare
-            + df['avg_rating'] * df['review_count']  # reputația produsului
+            df['total_qty_sold'] * 5
+            + df['view_count'] / 50
+            + df['wishlist_count'] * 3
+            + df['avg_rating'] * df['review_count']
         )
 
         features = [
@@ -108,9 +108,9 @@ def get_prediction():
         X_scaled = scaler.fit_transform(X)
 
         model = RandomForestRegressor(
-            n_estimators=100,       # 100 de arbori de decizie
-            max_depth=6,            # profunzime maximă (evită overfitting)
-            random_state=42         # seed fix = rezultat reproductibil
+            n_estimators=100,
+            max_depth=6,
+            random_state=42
         )
         model.fit(X_scaled, y)
 
