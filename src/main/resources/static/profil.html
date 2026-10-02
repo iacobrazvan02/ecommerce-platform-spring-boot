@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroTech - Profilul Meu</title>
+    <meta name="description"
+        content="Gestionează-ți profilul ElectroTech — date personale, adrese și istoricul comenzilor.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #0071e3;
+            --accent-hover: #005bb5;
+            --red: #e53935;
+            --bg: #000000;
+            --bg-secondary: #111111;
+            --card: #1a1a1a;
+            --white: #f5f5f7;
+            --text: #f5f5f7;
+            --text-secondary: #86868b;
+            --border: #2d2d2d;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --radius: 12px;
+            --nav-height: 64px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .user-actions a:hover,
+        .user-actions span:hover {
+            color: var(--accent);
+        }
+
+        .logout-btn {
+            color: var(--danger) !important;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 48px 40px 80px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .back-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .profile-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .profile-section:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+
+        .profile-section:nth-child(3) {
+            animation-delay: 0.1s;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+        }
+
+        .save-btn {
+            margin-top: 18px;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            background: var(--accent);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .address-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .address-card:hover {
+            border-color: #444;
+        }
+
+        .address-card .addr-info {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .address-card .addr-info .addr-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .address-card .addr-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .addr-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .addr-btn.edit:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 113, 227, 0.1);
+        }
+
+        .addr-btn.delete:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .add-addr-form {
+            margin-top: 12px;
+            padding: 14px;
+            background: var(--bg-secondary);
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+        }
+
+        .add-addr-form .addr-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .add-addr-form input {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--card);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .add-addr-form input:focus {
+            border-color: var(--accent);
+        }
+
+        .add-addr-btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 8px;
+            background: var(--success);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-addr-btn:hover {
+            opacity: 0.9;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .orders-table td {
+            padding: 14px 12px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(45, 45, 45, 0.5);
+            vertical-align: top;
+        }
+
+        .orders-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .product-tag {
+            display: inline-block;
+            background: rgba(0, 113, 227, 0.12);
+            color: var(--accent);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 2px 3px 2px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.completed {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--success);
+        }
+
+        .status-badge.cart {
+            background: rgba(0, 113, 227, 0.15);
+            color: var(--accent);
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .card-item:hover {
+            border-color: #444;
+        }
+
+        .card-item .card-visual {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .card-brand-icon {
+            width: 44px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .card-brand-icon.visa { background: linear-gradient(135deg, #1a1f71, #2d5fdc); }
+        .card-brand-icon.mastercard { background: linear-gradient(135deg, #eb001b, #f79e1b); }
+        .card-brand-icon.amex { background: linear-gradient(135deg, #006fcf, #00aeef); }
+        .card-brand-icon.card { background: linear-gradient(135deg, #444, #666); }
+
+        .card-details-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .card-number-display {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            font-family: 'Inter', monospace;
+            letter-spacing: 1px;
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .card-item .card-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .card-default-badge {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--success);
+            background: rgba(52, 199, 89, 0.12);
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin-left: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 20px 60px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .header-inner {
+                padding: 0 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">Electro<span>Tech</span></a>
+            <div class="user-actions" id="userNav"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Profilul meu</h1>
+            <a href="index.html" class="back-link">← Înapoi la magazin</a>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-title">👤 Date personale</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prenume</label>
+                    <input type="text" id="profileFirstName" placeholder="Prenumele tău">
+                </div>
+                <div class="form-group">
+                    <label>Nume</label>
+                    <input type="text" id="profileLastName" placeholder="Numele tău">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="profileEmail" placeholder="email@exemplu.com">
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="tel" id="profilePhone" placeholder="07xx xxx xxx">
+                </div>
+            </div>
+            <button class="save-btn" onclick="saveProfile()">💾 Salvează modificările</button>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-title">🔒 Schimbă parola</div>
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Parola curentă</label>
+                    <input type="password" id="currentPassword" placeholder="Introdu parola curentă">
+                </div>
+                <div class="form-group">
+                    <label>Parola nouă</label>
+                    <input type="password" id="newPassword" placeholder="Minim 4 caractere">
+                </div>
+                <div class="form-group">
+                    <label>Confirmă parola nouă</label>
+                    <input type="password" id="confirmPassword" placeholder="Repetă parola nouă">
+                </div>
+            </div>
+            <button class="save-btn" onclick="changePassword()" style="background: var(--danger)">🔐 Schimbă
+                parola</button>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-title">📍 Adresele mele</div>
+            <div id="addressList"></div>
+            <div class="add-addr-form">
+                <div
+                    style="font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                    Adaugă adresă nouă</div>
+                <div class="addr-row">
+                    <input type="text" id="newStreet" placeholder="Strada, număr, bloc, ap.">
+                </div>
+                <div class="addr-row">
+                    <input type="text" id="newCity" placeholder="Oraș">
+                    <input type="text" id="newZip" placeholder="Cod poștal" style="max-width:130px">
+                    <button class="add-addr-btn" onclick="addNewAddress()">+ Adaugă</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-title">Gestionare carduri</div>
+            <div id="cardList"></div>
+            <div class="add-addr-form">
+                <div style="font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Adauga card nou</div>
+                <div class="addr-row">
+                    <input type="text" id="newCardNumber" placeholder="Numar card" maxlength="19" oninput="formatProfileCardNumber(this)">
+                </div>
+                <div class="addr-row">
+                    <input type="text" id="newCardHolder" placeholder="Nume titular">
+                    <input type="text" id="newCardExpiry" placeholder="LL/AA" maxlength="5" style="max-width:100px" oninput="formatProfileExpiry(this)">
+                    <button class="add-addr-btn" onclick="addNewCard()">+ Adauga</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <div class="section-title">Istoricul comenzilor</div>
+            <div id="orderHistory"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+        © 2026 ElectroTech Store. Toate drepturile rezervate.
+    </footer>
+
+    <script>
+        const API = 'http://localhost:8080';
+        let currentUser = null;
+
+        function initAuth() {
+            const nav = document.getElementById('userNav');
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) { window.location.href = 'login.html'; return; }
+
+            currentUser = JSON.parse(userData);
+            const userName = currentUser.email.includes('@') ? currentUser.email.split('@')[0] : currentUser.email;
+            let html = `
+            <span style="font-size:13px">Salut, <strong>${userName}</strong></span>
+            <a href="profil.html" style="color: var(--accent); font-weight: 600;">👤 Profil</a>
+            <a href="wishlist.html" style="color: #e53935; font-weight: 600;">Favorite</a>
+            <a href="cart.html" style="color: var(--accent); font-weight: 600;">🛒 Coș</a>
+        `;
+            if (currentUser.role === 'ADMIN') {
+                html += `<a href="admin.html" style="color: #ff3b30; font-weight: 700; border: 1px solid #ff3b30; padding: 4px 8px; border-radius: 6px;">⚙️ Admin</a>`;
+            }
+            html += `<span class="logout-btn" onclick="logout()" style="cursor:pointer; color: #ff3b30;">Logout</span>`;
+            nav.innerHTML = html;
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'index.html';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API}/api/profile/${currentUser.id}`);
+                const data = await res.json();
+
+                document.getElementById('profileFirstName').value = data.firstName || '';
+                document.getElementById('profileLastName').value = data.lastName || '';
+                document.getElementById('profileEmail').value = data.email || '';
+                document.getElementById('profilePhone').value = data.phone || '';
+            } catch (e) {
+                console.error('Eroare la încărcarea profilului:', e);
+            }
+        }
+
+        async function saveProfile() {
+            const firstName = document.getElementById('profileFirstName').value.trim();
+            const lastName = document.getElementById('profileLastName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const phone = document.getElementById('profilePhone').value.trim();
+
+            if (!email) {
+                showToast('Email-ul este obligatoriu!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/profile/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, email, phone })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('✅ Profil actualizat cu succes!');
+                    // Actualizăm și localStorage
+                    currentUser.email = email;
+                    if (data.profile) currentUser.profile = data.profile;
+                    localStorage.setItem('loggedUser', JSON.stringify(currentUser));
+                    initAuth();
+                } else {
+                    showToast(data.error || 'Eroare la actualizare!', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function loadAddresses() {
+            try {
+                const res = await fetch(`${API}/api/addresses/user/${currentUser.id}`);
+                const addrs = await res.json();
+                const container = document.getElementById('addressList');
+
+                if (!addrs || addrs.length === 0) {
+                    container.innerHTML = '<div class="empty-msg">Nu ai nicio adresă salvată.</div>';
+                    return;
+                }
+
+                container.innerHTML = addrs.map(a => `
+                <div class="address-card" id="addr-card-${a.id}" style="${a.isDefault ? 'border-color: var(--success); background: rgba(52,199,89,0.05);' : ''}">
+                    <div class="addr-info">
+                        <div>${a.street}, ${a.city} ${a.zipCode || ''}</div>
+                        ${a.isDefault
+                        ? '<div class="addr-label" style="color: var(--success); font-weight:600;">✓ Adresă principală de livrare</div>'
+                        : ''}
+                    </div>
+                    <div class="addr-btns">
+                        ${!a.isDefault
+                        ? '<button class="addr-btn" onclick="setDefaultAddress(' + a.id + ')" title="Setează ca principală" style="width:auto; padding:4px 10px; font-size:11px; font-weight:600; color:var(--accent); border-color:var(--accent);">Principală</button>'
+                        : ''}
+                        <button class="addr-btn edit" onclick="editAddress(${a.id}, '${(a.street || '').replace(/'/g, "\\'")}', '${(a.city || '').replace(/'/g, "\\'")}', '${(a.zipCode || '').replace(/'/g, "\\'")}')">✏️</button>
+                        <button class="addr-btn delete" onclick="deleteAddress(${a.id})" title="Șterge">🗑</button>
+                    </div>
+                </div>
+            `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function setDefaultAddress(addrId) {
+            try {
+                const res = await fetch(`${API}/api/addresses/${addrId}/set-default`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast('✅ Adresă principală setată cu succes!');
+                    loadAddresses();
+                } else {
+                    showToast('Eroare la setare!', 'error');
+                }
+            } catch (e) {
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function addNewAddress() {
+            const street = document.getElementById('newStreet').value.trim();
+            const city = document.getElementById('newCity').value.trim();
+            const zipCode = document.getElementById('newZip').value.trim();
+
+            if (!street || !city) {
+                showToast('Completează strada și orașul!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/addresses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser.id, street, city, zipCode, isDefault: false })
+                });
+                if (res.ok) {
+                    document.getElementById('newStreet').value = '';
+                    document.getElementById('newCity').value = '';
+                    document.getElementById('newZip').value = '';
+                    showToast('✅ Adresă adăugată!');
+                    loadAddresses();
+                } else {
+                    showToast('Eroare la adăugare!', 'error');
+                }
+            } catch (e) {
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        function editAddress(id, street, city, zip) {
+            const newStreet = prompt('Stradă:', street);
+            if (newStreet === null) return;
+            const newCity = prompt('Oraș:', city);
+            if (newCity === null) return;
+            const newZip = prompt('Cod poștal:', zip);
+            if (newZip === null) return;
+
+            fetch(`${API}/api/addresses/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ street: newStreet, city: newCity, zipCode: newZip })
+            }).then(res => {
+                if (res.ok) {
+                    showToast('✅ Adresă actualizată!');
+                    loadAddresses();
+                } else {
+                    showToast('Eroare la actualizare!', 'error');
+                }
+            }).catch(() => showToast('Eroare de conexiune!', 'error'));
+        }
+
+        async function deleteAddress(id) {
+            if (!confirm('Ești sigur că vrei să ștergi această adresă?')) return;
+            try {
+                const res = await fetch(`${API}/api/addresses/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showToast('Adresă ștearsă!');
+                    loadAddresses();
+                } else {
+                    showToast('Eroare la ștergere!', 'error');
+                }
+            } catch (e) {
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API}/api/orders/user/${currentUser.id}`);
+                const orders = await res.json();
+                const container = document.getElementById('orderHistory');
+
+                const completed = orders.filter(o => o.status === 'COMPLETED');
+
+                if (completed.length === 0) {
+                    container.innerHTML = '<div class="empty-msg">Nu ai comenzi finalizate încă.</div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Comandă</th>
+                            <th>Produse</th>
+                            <th>Total</th>
+                            <th>Adresă</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${completed.map(o => {
+                    const productsHtml = o.orderItems && o.orderItems.length > 0
+                        ? o.orderItems.map(item => `<span class="product-tag">${item.product.name} (x${item.quantity})</span>`).join('')
+                        : '<span style="color:#666">—</span>';
+
+                    const addrHtml = o.shippingAddress
+                        ? `${o.shippingAddress.street}, ${o.shippingAddress.city} ${o.shippingAddress.zipCode || ''}`
+                        : '—';
+
+                    const dateStr = formatDate(o.orderDate);
+
+                    return `
+                                <tr>
+                                    <td style="font-weight:600; color:var(--text-secondary)">#${o.id}</td>
+                                    <td>${productsHtml}</td>
+                                    <td style="color:var(--accent); font-weight:600">${o.totalAmount ? o.totalAmount.toFixed(2) : '0.00'} lei</td>
+                                    <td style="font-size:12px; color:var(--text-secondary)">${addrHtml}</td>
+                                    <td style="font-size:12px; color:var(--text-secondary)">${dateStr}</td>
+                                </tr>
+                            `;
+                }).join('')}
+                    </tbody>
+                </table>
+            `;
+            } catch (e) {
+                console.error('Eroare la încărcarea comenzilor:', e);
+                container.innerHTML = '<div class="empty-msg">Eroare la încărcarea comenzilor.</div>';
+            }
+        }
+
+        function formatDate(dateObj) {
+            if (!dateObj) return 'N/A';
+            if (Array.isArray(dateObj)) {
+                const d = new Date(dateObj[0], dateObj[1] - 1, dateObj[2], dateObj[3] || 0, dateObj[4] || 0);
+                return d.toLocaleString('ro-RO');
+            }
+            const d = new Date(dateObj);
+            return isNaN(d) ? 'N/A' : d.toLocaleString('ro-RO');
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showToast('Completează toate câmpurile!', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('Parolele noi nu coincid!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 4) {
+                showToast('Parola nouă trebuie să aibă cel puțin 4 caractere!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/profile/${currentUser.id}/password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('✅ Parola a fost schimbată cu succes!');
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                } else {
+                    showToast(data.error || 'Eroare la schimbarea parolei!', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function loadCards() {
+            try {
+                const res = await fetch(`${API}/api/cards/user/${currentUser.id}`);
+                const cards = await res.json();
+                const container = document.getElementById('cardList');
+
+                if (!cards || cards.length === 0) {
+                    container.innerHTML = '<div class="empty-msg">Nu ai carduri salvate.</div>';
+                    return;
+                }
+
+                container.innerHTML = cards.map(c => {
+                    const brandClass = (c.cardBrand || 'CARD').toLowerCase();
+                    const brandLabel = c.cardBrand || 'CARD';
+                    const defaultBadge = c.isDefault ? '<span class="card-default-badge">Principal</span>' : '';
+                    return `
+                    <div class="card-item">
+                        <div class="card-visual">
+                            <div class="card-brand-icon ${brandClass}">${brandLabel}</div>
+                            <div class="card-details-info">
+                                <div class="card-number-display">•••• •••• •••• ${c.cardNumberLast4}${defaultBadge}</div>
+                                <div class="card-meta">${c.cardHolder} | Exp: ${c.cardExpiry}</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            ${!c.isDefault ? `<button class="addr-btn edit" onclick="setDefaultCard(${c.id})" title="Seteaza principal">⭐</button>` : ''}
+                            <button class="addr-btn delete" onclick="deleteCard(${c.id})" title="Sterge">🗑</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function addNewCard() {
+            const cardNumber = document.getElementById('newCardNumber').value.trim();
+            const cardHolder = document.getElementById('newCardHolder').value.trim();
+            const cardExpiry = document.getElementById('newCardExpiry').value.trim();
+
+            if (!cardNumber || !cardHolder || !cardExpiry) {
+                showToast('Completeaza toate campurile cardului!', 'error');
+                return;
+            }
+
+            const rawNum = cardNumber.replace(/\s/g, '');
+            if (rawNum.length !== 16) {
+                showToast('Numarul de card trebuie sa aiba 16 cifre!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API}/api/cards`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser.id, cardNumber, cardHolder, cardExpiry })
+                });
+                if (res.ok) {
+                    showToast('Card adaugat cu succes!');
+                    document.getElementById('newCardNumber').value = '';
+                    document.getElementById('newCardHolder').value = '';
+                    document.getElementById('newCardExpiry').value = '';
+                    loadCards();
+                } else {
+                    showToast('Eroare la adaugarea cardului!', 'error');
+                }
+            } catch (e) { showToast('Eroare de conexiune!', 'error'); }
+        }
+
+        async function deleteCard(id) {
+            if (!confirm('Esti sigur ca vrei sa stergi acest card?')) return;
+            try {
+                const res = await fetch(`${API}/api/cards/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showToast('Card sters!');
+                    loadCards();
+                } else {
+                    showToast('Eroare la stergere!', 'error');
+                }
+            } catch (e) { showToast('Eroare de conexiune!', 'error'); }
+        }
+
+        async function setDefaultCard(id) {
+            try {
+                const res = await fetch(`${API}/api/cards/${id}/set-default`, { method: 'PUT' });
+                if (res.ok) {
+                    showToast('Card setat ca principal!');
+                    loadCards();
+                } else {
+                    showToast('Eroare!', 'error');
+                }
+            } catch (e) { showToast('Eroare de conexiune!', 'error'); }
+        }
+
+        function formatProfileCardNumber(input) {
+            let val = input.value.replace(/\D/g, '').substring(0, 16);
+            input.value = val.replace(/(\d{4})(?=\d)/g, '$1 ');
+        }
+
+        function formatProfileExpiry(input) {
+            let val = input.value.replace(/\D/g, '').substring(0, 4);
+            if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
+            input.value = val;
+        }
+
+        function logAccess(actionName) {
+            const email = currentUser ? currentUser.email : "Vizitator Anonim";
+            fetch(`${API}/api/logs/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail: email, action: actionName, pageUrl: window.location.href })
+            }).catch(() => { });
+        }
+
+        initAuth();
+        if (currentUser) {
+            loadProfile();
+            loadAddresses();
+            loadCards();
+            loadOrders();
+            logAccess("Vizualizare Pagina Profil");
+        }
+    </script>
+</body>
+
+</html>

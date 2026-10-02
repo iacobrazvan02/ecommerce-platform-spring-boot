@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroTech Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #0071e3;
+            --accent-hover: #005bb5;
+            --red: #e53935;
+            --red-hover: #c62828;
+            --bg: #000000;
+            --bg-secondary: #111111;
+            --card: #1a1a1a;
+            --card-hover: #222222;
+            --white: #f5f5f7;
+            --text: #f5f5f7;
+            --text-secondary: #86868b;
+            --border: #2d2d2d;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --radius: 12px;
+            --nav-height: 64px;
+            --subnav-height: 48px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 16px 10px 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text);
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .search-container input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent);
+            background: var(--card);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+        }
+
+        .search-container::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 999;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .search-suggestions.visible {
+            display: block;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .suggestion-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .suggestion-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .suggestion-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .suggestion-price {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .user-actions a,
+        .user-actions span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .user-actions a:hover,
+        .user-actions span:hover {
+            color: var(--accent);
+        }
+
+        .btn-register {
+            background: var(--red);
+            color: var(--white) !important;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px !important;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn-register:hover {
+            background: var(--red-hover);
+        }
+
+        .logout-btn {
+            color: var(--danger) !important;
+        }
+
+        .subnav {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: var(--nav-height);
+            z-index: 999;
+        }
+
+        .subnav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: var(--subnav-height);
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .subnav-item {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .subnav-item:hover,
+        .subnav-item.active {
+            color: var(--white);
+            border-bottom-color: var(--red);
+        }
+
+        .subnav-item.produse-trigger {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .subnav-item.produse-trigger::before {
+            content: '☰';
+            font-size: 16px;
+        }
+
+        .subnav-item.produse-trigger::after {
+            content: '▾';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .mega-menu-wrapper {
+            position: relative;
+        }
+
+        .mega-menu {
+            position: absolute;
+            top: 100%;
+            left: -40px;
+            display: flex;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--red);
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--card-shadow-hover);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            transition: all 0.25s ease;
+            z-index: 998;
+        }
+
+        .mega-menu-wrapper:hover .mega-menu,
+        .mega-menu-wrapper.open .mega-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mega-left {
+            width: 300px;
+            padding: 8px 0;
+            border-right: 1px solid var(--border);
+        }
+
+        .mega-menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .mega-menu-item:hover,
+        .mega-menu-item.hovered {
+            background: var(--bg-secondary);
+            color: var(--red);
+        }
+
+        .mega-menu-item .icon {
+            font-size: 18px;
+            width: 28px;
+            text-align: center;
+            margin-right: 12px;
+        }
+
+        .mega-menu-item .label {
+            flex: 1;
+        }
+
+        .mega-menu-item .arrow {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .mega-right {
+            width: 280px;
+            padding: 20px 24px;
+            display: none;
+            min-height: 200px;
+        }
+
+        .mega-right.visible {
+            display: block;
+        }
+
+        .mega-right-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .mega-right-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 14px;
+        }
+
+        .mega-brand-link {
+            display: block;
+            padding: 6px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .mega-brand-link:hover {
+            color: var(--red);
+        }
+
+        .mega-brand-all {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mega-brand-all:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .hero {
+            max-width: 1280px;
+            margin: 24px auto;
+            padding: 0 40px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a0a0a 100%);
+            border-radius: 18px;
+            padding: 60px 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(229, 57, 53, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            line-height: 1.15;
+        }
+
+        .hero-subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: var(--red);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero-cta:hover {
+            background: var(--red-hover);
+        }
+
+        .filters-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 40px 0;
+        }
+
+        .filters-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filters-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .active-category-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .filters-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-chip.active {
+            background: var(--accent);
+            color: var(--white);
+            border-color: var(--accent);
+        }
+
+        .filters-advanced {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select, .filter-input {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            border-color: var(--accent);
+        }
+
+        .filter-input {
+            width: 100px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--red);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            z-index: 2;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 400;
+            margin-right: 8px;
+        }
+
+        .price-new {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .products-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 40px 60px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: #444;
+        }
+
+        .product-card .card-image {
+            width: 100%;
+            height: 280px;
+            object-fit: contain;
+            background: #fff;
+            padding: 10px;
+            display: block;
+        }
+
+        .card-body {
+            padding: 16px 20px 20px;
+        }
+
+        .card-category {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-specs {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .card-price .currency {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .stock-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .stock-badge.in-stock {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--success);
+        }
+
+        .stock-badge.out-of-stock {
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--danger);
+        }
+
+        .card-actions {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-to-cart-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1.5px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .add-to-cart-btn.disabled {
+            border-color: var(--border);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .add-to-cart-btn.disabled:hover {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .wishlist-btn {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .wishlist-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(229, 57, 53, 0.1);
+        }
+
+        .wishlist-btn.active {
+            border-color: var(--red);
+            background: rgba(229, 57, 53, 0.15);
+            color: var(--red);
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .wishlist-btn.pop {
+            animation: heartPop 0.35s ease;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success { border-color: var(--success); }
+        .toast.error { border-color: var(--danger); }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-results h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 0 20px;
+                gap: 16px;
+            }
+
+            .search-container {
+                max-width: 100%;
+                order: 3;
+                flex-basis: 100%;
+            }
+
+            .header-inner {
+                flex-wrap: wrap;
+                height: auto;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .subnav-inner {
+                padding: 0 20px;
+                gap: 20px;
+                overflow-x: auto;
+            }
+
+            .hero {
+                padding: 0 20px;
+                margin: 16px auto;
+            }
+
+            .hero-card {
+                padding: 36px 28px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .filters-section,
+            .products-section {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+
+            .mega-menu {
+                left: -20px;
+                width: calc(100vw - 40px);
+                flex-direction: column;
+            }
+
+            .mega-left {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .mega-right {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+        #chat-bubble {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #0071e3; color: white;
+            width: 60px; height: 60px;
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 24px; cursor: pointer;
+            z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        #chat-bubble:hover { transform: scale(1.1); }
+
+        #chat-window {
+            display: none; position: fixed;
+            bottom: 100px; right: 30px;
+            width: 350px; height: 450px;
+            background: #1c1c1e; border: 1px solid #2c2c2e;
+            border-radius: 20px; flex-direction: column;
+            z-index: 1000; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        #chat-content {
+            flex: 1; padding: 20px;
+            overflow-y: auto; color: #f5f5f7;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 14px; }
+        .user-msg { background: #0071e3; align-self: flex-end; color: white; }
+        .ai-msg { background: #2c2c2e; align-self: flex-start; color: #f5f5f7; }
+
+        .quiz-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-overlay.open { display: flex; }
+        .quiz-modal {
+            background: var(--card, #1a1a1a);
+            border: 1px solid var(--border, #2d2d2d);
+            border-radius: 16px;
+            padding: 32px;
+            width: 420px;
+            max-width: 90vw;
+        }
+        .quiz-modal h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .quiz-modal p {
+            color: var(--text-secondary, #86868b);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .quiz-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .quiz-select, .quiz-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border, #2d2d2d);
+            border-radius: 10px;
+            background: var(--bg-secondary, #111);
+            color: var(--text, #f5f5f7);
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 14px;
+            outline: none;
+        }
+        .quiz-select:focus, .quiz-input:focus {
+            border-color: var(--accent, #0071e3);
+        }
+        .quiz-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent, #0071e3);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .quiz-btn:hover { background: var(--accent-hover, #005bb5); }
+        .quiz-result {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(0,113,227,0.1);
+            border: 1px solid var(--accent, #0071e3);
+            border-radius: 10px;
+        }
+        .quiz-result-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .quiz-result-price {
+            color: var(--red, #e53935);
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .quiz-close {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--text-secondary, #86868b);
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div id="chat-bubble" onclick="toggleChat()"> 💬 </div>
+
+<div id="chat-window">
+    <div style="background: #2c2c2e; padding: 15px; font-weight: bold; border-bottom: 1px solid #3a3a3c;">
+        Asistent ElectroTech ✨
+    </div>
+    <div id="chat-content">
+        <div class="msg ai-msg">Salut! Cum te pot ajuta astăzi cu produsele ElectroTech?</div>
+    </div>
+    <div style="padding: 15px; display: flex; gap: 10px; border-top: 1px solid #2c2c2e;">
+        <input id="chat-input" type="text" placeholder="Întreabă ceva..."
+               style="flex: 1; background: #2c2c2e; border: none; color: white; padding: 10px; border-radius: 10px; outline: none;">
+        <button onclick="sendMessage()"
+                style="background: #0071e3; color: white; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer;">
+            Trimite
+        </button>
+    </div>
+</div>
+
+<div class="quiz-overlay" id="quizOverlay" onclick="if(event.target===this) closeQuiz()">
+    <div class="quiz-modal">
+        <button class="quiz-close" onclick="closeQuiz()">&times;</button>
+        <h2>Gaseste produsul ideal</h2>
+        <p>Raspunde la 2 intrebari si iti recomandam produsul perfect pentru tine.</p>
+        <label class="quiz-label">Pentru ce vei folosi produsul?</label>
+        <select class="quiz-select" id="quizUsage">
+            <option value="general">Utilizare generala</option>
+            <option value="smartphone">Telefon / Comunicare</option>
+            <option value="tablete">Tableta</option>
+            <option value="laptop">Laptop / Productivitate</option>
+            <option value="tv">TV / Divertisment</option>
+            <option value="electrocasnice_mari">Electrocasnice mari</option>
+            <option value="electrocasnice_mici">Electrocasnice mici</option>
+            <option value="gaming">Gaming</option>
+            <option value="accesorii">Accesorii</option>
+        </select>
+        <label class="quiz-label">Care e bugetul tau maxim? (lei)</label>
+        <input class="quiz-input" id="quizBudget" type="number" placeholder="ex: 5000" value="5000" />
+        <button class="quiz-btn" onclick="submitQuiz()">Recomanda-mi un produs</button>
+        <div id="quizResult"></div>
+    </div>
+</div>
+
+
+<header class="header">
+    <div class="header-inner">
+        <a href="index.html" class="logo">Electro<span>Tech</span></a>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Caută produsul dorit..."
+                   oninput="handleSearch(this.value)" autocomplete="off">
+            <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+        <div class="user-actions" id="userNav"></div>
+    </div>
+</header>
+
+<nav class="subnav">
+    <div class="subnav-inner">
+        <div class="mega-menu-wrapper" id="megaMenuWrapper">
+            <div class="subnav-item produse-trigger" id="produseTrigger">Produse</div>
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-left">
+                    <div class="mega-menu-item" onclick="filterByCategory('all')" onmouseenter="hideBrandPanel()">
+                        <span class="icon">🏠</span>
+                        <span class="label">Toate produsele</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Smartphone" onclick="filterByCategory('Smartphone')" onmouseenter="showBrandsForCategory('Smartphone', this)">
+                        <span class="icon">📱</span>
+                        <span class="label">Smartphone</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Tablete" onclick="filterByCategory('Tablete')" onmouseenter="showBrandsForCategory('Tablete', this)">
+                        <span class="icon">📋</span>
+                        <span class="label">Tablete</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Laptopuri" onclick="filterByCategory('Laptopuri')" onmouseenter="showBrandsForCategory('Laptopuri', this)">
+                        <span class="icon">💻</span>
+                        <span class="label">Laptop, Desktop, IT</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Electrocasnice mari" onclick="filterByCategory('Electrocasnice mari')" onmouseenter="showBrandsForCategory('Electrocasnice mari', this)">
+                        <span class="icon">🏠</span>
+                        <span class="label">Electrocasnice mari</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Electrocasnice mici" onclick="filterByCategory('Electrocasnice mici')" onmouseenter="showBrandsForCategory('Electrocasnice mici', this)">
+                        <span class="icon">🍳</span>
+                        <span class="label">Electrocasnice mici</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="TV" onclick="filterByCategory('TV')" onmouseenter="showBrandsForCategory('TV', this)">
+                        <span class="icon">📺</span>
+                        <span class="label">TV, Audio-Video</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Gaming" onclick="filterByCategory('Gaming')" onmouseenter="showBrandsForCategory('Gaming', this)">
+                        <span class="icon">🎮</span>
+                        <span class="label">Gaming, Jocuri</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="mega-menu-item" data-category="Accesorii" onclick="filterByCategory('Accesorii')" onmouseenter="showBrandsForCategory('Accesorii', this)">
+                        <span class="icon">🎧</span>
+                        <span class="label">Accesorii</span>
+                        <span class="arrow">›</span>
+                    </div>
+                </div>
+                <div class="mega-right" id="megaRight">
+                    <div class="mega-right-title" id="megaRightTitle"></div>
+                    <div id="megaRightBrands"></div>
+                </div>
+            </div>
+        </div>
+        <div class="subnav-item" onclick="filterByCategory('Smartphone')">Smartphone</div>
+        <div class="subnav-item" onclick="filterByCategory('Tablete')">Tablete</div>
+        <div class="subnav-item" onclick="filterByCategory('Laptopuri')">Laptopuri</div>
+        <div class="subnav-item" onclick="filterByCategory('TV')">TV</div>
+        <div class="subnav-item" onclick="filterByCategory('Electrocasnice mari')">Electrocasnice mari</div>
+        <div class="subnav-item" onclick="filterByCategory('Electrocasnice mici')">Electrocasnice mici</div>
+        <div class="subnav-item" onclick="filterByCategory('Gaming')">Gaming</div>
+        <div class="subnav-item" onclick="filterByCategory('Accesorii')">Accesorii</div>
+        <a href="oferte.html" class="subnav-item" style="color: #e53935; font-weight: 700;">Oferte</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-card">
+        <div class="hero-eyebrow">ElectroTech Store</div>
+        <h1 class="hero-title">Viitorul este aici.</h1>
+        <p class="hero-subtitle">Descoperă cele mai noi gadget-uri și electrocasnice la prețuri imbatabile.</p>
+        <button class="hero-cta" onclick="filterByCategory('all')">Exploreaza produsele</button>
+        <button class="hero-cta" onclick="openQuiz()" style="background: transparent; border: 1px solid var(--accent); margin-left: 12px;">Asistent Ajutor-Gaseste produsul ideal</button>
+    </div>
+</section>
+
+<section class="filters-section">
+    <div class="filters-bar">
+        <div class="filters-left">
+            <h2 class="section-title">Produse</h2>
+            <span class="active-category-label" id="activeCategoryLabel">— Toate produsele</span>
+        </div>
+        <div class="filters-right">
+            <button class="filter-chip active" onclick="filterByStock('all')" data-stock="all">Toate</button>
+            <button class="filter-chip" onclick="filterByStock('in-stock')" data-stock="in-stock">✓ În stoc</button>
+            <button class="filter-chip" onclick="filterByStock('out-of-stock')" data-stock="out-of-stock">✕ Stoc epuizat</button>
+        </div>
+    </div>
+</section>
+
+<div class="filters-advanced">
+    <span class="filter-label">Sortare:</span>
+    <select class="filter-select" id="sortSelect" onchange="applySort(this.value)">
+        <option value="default">Implicit</option>
+        <option value="price-asc">Preț crescător</option>
+        <option value="price-desc">Preț descrescător</option>
+        <option value="name-asc">Nume A-Z</option>
+        <option value="name-desc">Nume Z-A</option>
+        <option value="rating-desc">Rating descrescător</option>
+    </select>
+
+    <div class="filter-divider"></div>
+
+    <span class="filter-label">Brand:</span>
+    <select class="filter-select" id="brandSelect" onchange="applyBrandFilter(this.value)">
+        <option value="all">Toate</option>
+    </select>
+
+    <div class="filter-divider"></div>
+
+    <span class="filter-label">Preț:</span>
+    <input type="number" class="filter-input" id="priceMin" placeholder="Min" oninput="applyPriceRange()">
+    <span style="color: var(--text-secondary); font-size: 13px;">—</span>
+    <input type="number" class="filter-input" id="priceMax" placeholder="Max" oninput="applyPriceRange()">
+    <span class="filter-label">lei</span>
+
+    <div class="filter-divider"></div>
+
+    <span class="filter-label">Rating:</span>
+    <select class="filter-select" id="ratingSelect" onchange="applyRatingFilter(this.value)">
+        <option value="0">Toate</option>
+        <option value="5">★★★★★ (5 stele)</option>
+        <option value="4">★★★★☆ (4 stele)</option>
+        <option value="3">★★★☆☆ (3 stele)</option>
+        <option value="2">★★☆☆☆ (2 stele)</option>
+        <option value="1">★☆☆☆☆ (1 stea)</option>
+    </select>
+</div>
+
+<section class="products-section">
+    <div class="products-grid" id="products-grid"></div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+    © 2026 ElectroTech Store. Toate drepturile rezervate.
+</footer>
+
+<script>
+    let allProducts = [];
+    let allDiscounts = [];
+    let currentCategory = 'all';
+    let currentStock = 'all';
+    let currentSearch = '';
+    let currentSort = 'default';
+    let currentBrand = 'all';
+    let priceMin = null;
+    let priceMax = null;
+    let currentMinStars = 0;
+    let productRatings = {};
+
+    function initAuth() {
+        const nav = document.getElementById('userNav');
+        const userData = localStorage.getItem('loggedUser');
+
+        if (userData) {
+            const user = JSON.parse(userData);
+            const userName = user.email.includes('@') ? user.email.split('@')[0] : user.email;
+
+            let html = `
+            <span style="font-size:13px">Salut, <strong>${userName}</strong></span>
+            <a href="profil.html" style="margin-left:15px; color: var(--accent); font-weight: 600;">👤 Profil</a>
+            <a href="wishlist.html" style="margin-left:15px; color: #e53935; font-weight: 600;">Favorite</a>
+            <a href="cart.html" style="margin-left:15px">🛒 Coș</a>
+        `;
+
+            if (user.role === 'ADMIN') {
+                html += `<a href="admin.html" style="color: #ff3b30; font-weight: 700; margin-left: 15px; border: 1px solid #ff3b30; padding: 4px 8px; border-radius: 6px;">⚙️ Admin</a>`;
+            }
+
+            html += `<span class="logout-btn" onclick="logout()" style="margin-left:15px; cursor:pointer; color: #ff3b30;">Logout</span>`;
+
+            nav.innerHTML = html;
+        } else {
+            nav.innerHTML = `
+            <a href="login.html">Autentificare</a>
+            <a href="register.html" class="btn-register" style="margin-left:15px">Cont Nou</a>
+        `;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('loggedUser');
+        window.location.reload();
+    }
+
+    async function fetchContent() {
+        try {
+            const [productsRes, discountsRes, ratingsRes] = await Promise.all([
+                fetch('http://localhost:8080/api/products'),
+                fetch('http://localhost:8080/api/discounts'),
+                fetch('http://localhost:8080/api/reviews/average-ratings')
+            ]);
+            const products = await productsRes.json();
+            allDiscounts = await discountsRes.json();
+            productRatings = await ratingsRes.json();
+
+            const imagePromises = products.map(p =>
+                fetch(`http://localhost:8080/api/product-images/product/${p.id}`)
+                    .then(r => r.json())
+                    .catch(() => [])
+            );
+            const allImages = await Promise.all(imagePromises);
+
+            allProducts = products.map((p, idx) => {
+                const discount = allDiscounts.find(d => d.product && d.product.id === p.id);
+                const images = allImages[idx] || [];
+                const avgRating = productRatings[p.id] || 0;
+                return {
+                    ...p,
+                    displayCategory: p.category && typeof p.category === 'object' ? p.category.name : (p.category || 'Accesorii'),
+                    inStock: (p.stockQuantity !== undefined ? p.stockQuantity : p.stock) > 0,
+                    discountPercent: discount ? discount.discountPercent : 0,
+                    discountedPrice: discount ? (p.price * (1 - discount.discountPercent / 100)).toFixed(2) : null,
+                    imageUrl: images.length > 0 ? images[0].imageUrl : null,
+                    avgRating: avgRating
+                };
+            });
+
+            populateBrandFilter();
+            renderProducts();
+
+            products.forEach(p => {
+                fetch(`http://localhost:8080/api/analytics/track/${p.id}`, { method: 'POST' }).catch(() => {});
+            });
+        } catch (err) {
+            console.error('Eroare server:', err);
+            document.getElementById('products-grid').innerHTML = `
+                <div class="no-results">
+                    <h3>Serverul nu răspunde</h3>
+                    <p>Asigură-te că aplicația Spring Boot rulează pe portul 8080.</p>
+                </div>
+            `;
+        }
+    }
+
+    function populateBrandFilter() {
+        const brands = [...new Set(allProducts.map(p => p.brand).filter(Boolean))].sort();
+        const select = document.getElementById('brandSelect');
+        select.innerHTML = '<option value="all">Toate</option>' +
+            brands.map(b => `<option value="${b}">${b}</option>`).join('');
+    }
+
+    function showBrandsForCategory(category, menuItem) {
+        document.querySelectorAll('.mega-menu-item').forEach(el => el.classList.remove('hovered'));
+        if (menuItem) menuItem.classList.add('hovered');
+
+        const brandsInCategory = [...new Set(
+            allProducts
+                .filter(p => p.displayCategory.toLowerCase().includes(category.toLowerCase()))
+                .map(p => p.brand)
+                .filter(Boolean)
+        )].sort();
+
+        const rightPanel = document.getElementById('megaRight');
+        const titleEl = document.getElementById('megaRightTitle');
+        const brandsEl = document.getElementById('megaRightBrands');
+
+        titleEl.textContent = category;
+
+        if (brandsInCategory.length === 0) {
+            brandsEl.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; padding: 8px 0;">Niciun brand disponibil momentan.</div>';
+        } else {
+            brandsEl.innerHTML =
+                '<div class="mega-right-subtitle">Branduri</div>' +
+                brandsInCategory.map(b =>
+                    `<span class="mega-brand-link" onclick="filterByCategoryAndBrand('${category}', '${b}')">${b}</span>`
+                ).join('') +
+                `<span class="mega-brand-all" onclick="filterByCategory('${category}')">Toate din ${category}</span>`;
+        }
+
+        rightPanel.classList.add('visible');
+    }
+
+    function hideBrandPanel() {
+        document.querySelectorAll('.mega-menu-item').forEach(el => el.classList.remove('hovered'));
+        document.getElementById('megaRight').classList.remove('visible');
+    }
+
+    function filterByCategoryAndBrand(category, brand) {
+        currentCategory = category;
+        currentBrand = brand;
+
+        document.getElementById('activeCategoryLabel').textContent = `— ${category} / ${brand}`;
+
+        const brandSelect = document.getElementById('brandSelect');
+        if (brandSelect) {
+            brandSelect.value = brand;
+        }
+
+        document.getElementById('megaMenuWrapper').classList.remove('open');
+
+        renderProducts();
+
+        document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById('products-grid');
+        let filtered = allProducts;
+
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(p =>
+                p.displayCategory.toLowerCase().includes(currentCategory.toLowerCase())
+            );
+        }
+
+        if (currentStock === 'in-stock') {
+            filtered = filtered.filter(p => p.inStock);
+        } else if (currentStock === 'out-of-stock') {
+            filtered = filtered.filter(p => !p.inStock);
+        }
+
+        if (currentSearch.trim()) {
+            const q = currentSearch.toLowerCase();
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(q) ||
+                p.displayCategory.toLowerCase().includes(q) ||
+                (p.brand && p.brand.toLowerCase().includes(q))
+            );
+        }
+
+        if (currentBrand !== 'all') {
+            filtered = filtered.filter(p => p.brand && p.brand === currentBrand);
+        }
+
+        if (priceMin !== null) {
+            filtered = filtered.filter(p => p.price >= priceMin);
+        }
+        if (priceMax !== null) {
+            filtered = filtered.filter(p => p.price <= priceMax);
+        }
+
+        if (currentMinStars > 0) {
+            filtered = filtered.filter(p => Math.round(p.avgRating) === currentMinStars);
+        }
+
+        if (currentSort === 'price-asc') {
+            filtered.sort((a, b) => a.price - b.price);
+        } else if (currentSort === 'price-desc') {
+            filtered.sort((a, b) => b.price - a.price);
+        } else if (currentSort === 'name-asc') {
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (currentSort === 'name-desc') {
+            filtered.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (currentSort === 'rating-desc') {
+            filtered.sort((a, b) => b.avgRating - a.avgRating);
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="no-results"><h3>Niciun produs găsit</h3><p>Încearcă altă căutare sau categorie.</p></div>`;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(p => {
+            const hasDiscount = p.discountPercent > 0;
+            const priceHtml = hasDiscount
+                ? `<span class="price-old">${p.price} lei</span><span class="price-new">${p.discountedPrice} <span class="currency">lei</span></span>`
+                : `${p.price} <span class="currency">lei</span>`;
+            const badgeHtml = hasDiscount
+                ? `<div class="discount-badge">-${p.discountPercent}%</div>`
+                : '';
+
+            return `
+            <div class="product-card" onclick="goToProduct(${p.id})">
+                ${badgeHtml}
+                <img class="card-image" src="${p.imageUrl || 'https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine'}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine'">
+                <div class="card-body">
+                    <div class="card-category">${p.displayCategory}</div>
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-specs">Brand: ${p.brand}</div>
+                    ${p.avgRating > 0 ? `<div style="font-size:13px; margin-top:2px; color:#f5a623; letter-spacing:1px;">${'★'.repeat(Math.round(p.avgRating))}${'☆'.repeat(5 - Math.round(p.avgRating))} <span style="color:var(--text-secondary); font-size:11px;">${p.avgRating}</span></div>` : '<div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">Fără recenzii</div>'}
+                    <div class="card-footer">
+                        <div class="card-price">${priceHtml}</div>
+                        <span class="stock-badge ${p.inStock ? 'in-stock' : 'out-of-stock'}">
+                            ${p.inStock ? '● În stoc' : '● Stoc epuizat'}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="add-to-cart-btn ${!p.inStock ? 'disabled' : ''}"
+                            onclick="event.stopPropagation(); ${p.inStock ? `addToCart(${p.id})` : ''}">
+                        ${p.inStock ? 'Adaugă în coș' : 'Indisponibil'}
+                    </button>
+                    <button class="wishlist-btn" id="wish-btn-${p.id}"
+                            onclick="event.stopPropagation(); toggleWishlist(${p.id})"
+                            title="Adaugă la favorite">
+                        ♡
+                    </button>
+                </div>
+            </div>
+        `;
+        }).join('');
+    }
+
+    function filterByCategory(cat) {
+        currentCategory = cat;
+        currentBrand = 'all';
+        document.getElementById('activeCategoryLabel').textContent = cat === 'all' ? '— Toate produsele' : `— ${cat}`;
+
+        const brandSelect = document.getElementById('brandSelect');
+        if (brandSelect) brandSelect.value = 'all';
+
+        document.querySelectorAll('.subnav-item').forEach(el => {
+            el.classList.remove('active');
+            if(el.textContent.trim() === cat) el.classList.add('active');
+        });
+
+        document.getElementById('megaMenuWrapper').classList.remove('open');
+        hideBrandPanel();
+
+        renderProducts();
+
+        document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function filterByStock(stock) {
+        currentStock = stock;
+        document.querySelectorAll('.filter-chip').forEach(el => {
+            el.classList.remove('active');
+            if(el.getAttribute('onclick').includes(`'${stock}'`)) el.classList.add('active');
+        });
+        renderProducts();
+    }
+
+    let searchDebounce = null;
+
+    function handleSearch(value) {
+        currentSearch = value;
+        renderProducts();
+
+        clearTimeout(searchDebounce);
+        if (!value || value.trim().length < 2) {
+            document.getElementById('searchSuggestions').classList.remove('visible');
+            return;
+        }
+        searchDebounce = setTimeout(() => fetchSuggestions(value.trim()), 250);
+    }
+
+    async function fetchSuggestions(query) {
+        try {
+            const res = await fetch(`http://localhost:8080/api/products/search?q=${encodeURIComponent(query)}`);
+            const products = await res.json();
+            const container = document.getElementById('searchSuggestions');
+
+            if (!products || products.length === 0) {
+                container.classList.remove('visible');
+                return;
+            }
+
+            const imgPromises = products.map(p =>
+                fetch(`http://localhost:8080/api/product-images/product/${p.id}`)
+                    .then(r => r.json()).catch(() => [])
+            );
+            const allImgs = await Promise.all(imgPromises);
+
+            container.innerHTML = products.map((p, idx) => {
+                const imgUrl = allImgs[idx] && allImgs[idx].length > 0 ? allImgs[idx][0].imageUrl : 'https://placehold.co/36x36/1a1a1a/666?text=?';
+                const brand = p.brand || '';
+                return `<div class="suggestion-item" onclick="window.location.href='product.html?id=${p.id}'">
+                    <img class="suggestion-img" src="${imgUrl}" alt="${p.name}" onerror="this.src='https://placehold.co/36x36/1a1a1a/666?text=?'">
+                    <div class="suggestion-info">
+                        <div class="suggestion-name">${p.name}</div>
+                        <div class="suggestion-meta">${brand}</div>
+                    </div>
+                    <div class="suggestion-price">${parseFloat(p.price).toFixed(2)} lei</div>
+                </div>`;
+            }).join('');
+            container.classList.add('visible');
+        } catch (e) { console.error(e); }
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            document.getElementById('searchSuggestions').classList.remove('visible');
+        }
+    });
+
+    function applySort(value) {
+        currentSort = value;
+        renderProducts();
+    }
+
+    function applyBrandFilter(value) {
+        currentBrand = value;
+        renderProducts();
+    }
+
+    function applyPriceRange() {
+        const minVal = document.getElementById('priceMin').value;
+        const maxVal = document.getElementById('priceMax').value;
+        priceMin = minVal ? parseFloat(minVal) : null;
+        priceMax = maxVal ? parseFloat(maxVal) : null;
+        renderProducts();
+    }
+
+    function applyRatingFilter(value) {
+        currentMinStars = parseInt(value) || 0;
+        renderProducts();
+    }
+
+    async function addToCart(productId) {
+        const userData = localStorage.getItem('loggedUser');
+        if (!userData) {
+            alert('Te rugăm să te autentifici pentru a cumpăra!');
+            window.location.href = 'login.html';
+            return;
+        }
+        const user = JSON.parse(userData);
+
+        try {
+            const res = await fetch('http://localhost:8080/api/orders/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.id,
+                    productId: productId,
+                    quantity: 1
+                })
+            });
+            if (res.ok) {
+                alert('Produsul a fost adăugat în coș!');
+            } else {
+                alert('Eroare la adăugarea în coș (Verifică stocul sau serverul).');
+            }
+        } catch (err) {
+            console.error('Eroare request coș:', err);
+        }
+    }
+
+    function goToProduct(id) {
+        window.location.href = `product.html?id=${id}`;
+    }
+
+    function logAccess(actionName) {
+        const userData = localStorage.getItem('loggedUser');
+        const email = userData ? JSON.parse(userData).email : "Vizitator Anonim";
+
+        fetch('http://localhost:8080/api/logs/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userEmail: email,
+                action: actionName,
+                pageUrl: window.location.href
+            })
+        }).catch(() => {});
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => { toast.classList.remove('show'); }, 2500);
+    }
+
+    let userWishlistProductIds = [];
+
+    async function loadUserWishlist() {
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) return;
+      const user = JSON.parse(userData);
+      try {
+        const res = await fetch(`http://localhost:8080/api/wishlist/${user.id}`);
+        const items = await res.json();
+        userWishlistProductIds = items.map(i => i.product.id);
+        userWishlistProductIds.forEach(pid => {
+          const btn = document.getElementById(`wish-btn-${pid}`);
+          if (btn) {
+            btn.classList.add('active');
+            btn.innerHTML = '♥';
+          }
+        });
+      } catch(e) { console.error('Wishlist load error:', e); }
+    }
+
+    async function toggleWishlist(productId) {
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) {
+        alert('Te rugăm să te autentifici pentru a adăuga la favorite!');
+        window.location.href = 'login.html';
+        return;
+      }
+      const user = JSON.parse(userData);
+      const btn = document.getElementById(`wish-btn-${productId}`);
+
+      if (userWishlistProductIds.includes(productId)) {
+        try {
+          const res = await fetch(`http://localhost:8080/api/wishlist/${user.id}`);
+          const items = await res.json();
+          const item = items.find(i => i.product.id === productId);
+          if (item) {
+            await fetch(`http://localhost:8080/api/wishlist/${item.id}?userId=${user.id}`, { method: 'DELETE' });
+            userWishlistProductIds = userWishlistProductIds.filter(id => id !== productId);
+            if (btn) {
+              btn.classList.remove('active');
+              btn.innerHTML = '♡';
+              btn.classList.add('pop');
+              setTimeout(() => btn.classList.remove('pop'), 350);
+            }
+            showToast('Eliminat din favorite');
+          }
+        } catch(e) { console.error(e); showToast('Eroare!', 'error'); }
+      } else {
+        try {
+          const res = await fetch('http://localhost:8080/api/wishlist/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, productId })
+          });
+          if (res.ok) {
+            userWishlistProductIds.push(productId);
+            if (btn) {
+              btn.classList.add('active');
+              btn.innerHTML = '♥';
+              btn.classList.add('pop');
+              setTimeout(() => btn.classList.remove('pop'), 350);
+            }
+            showToast('Adăugat la favorite');
+          } else {
+            const err = await res.json();
+            showToast(err.error || 'Eroare!', 'error');
+          }
+        } catch(e) { console.error(e); showToast('Eroare de conexiune!', 'error'); }
+      }
+    }
+
+    initAuth();
+    fetchContent().then(() => loadUserWishlist());
+    logAccess("Vizualizare Pagina Acasă");
+
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        win.style.display = (win.style.display === 'none' || win.style.display === '') ? 'flex' : 'none';
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const content = document.getElementById('chat-content');
+        const text = input.value.trim();
+
+        if (!text) return;
+
+        content.innerHTML += `<div class="msg user-msg">${text}</div>`;
+        input.value = '';
+        content.scrollTop = content.scrollHeight;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/chat/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            const data = await response.json();
+
+            content.innerHTML += `<div class="msg ai-msg">${data.reply}</div>`;
+            content.scrollTop = content.scrollHeight;
+        } catch (error) {
+            content.innerHTML += `<div class="msg ai-msg" style="color: #ff453a;">Sunt offline momentan. Verifică dacă serverul Java pornit!</div>`;
+        }
+    }
+
+    document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function openQuiz() {
+        document.getElementById('quizOverlay').classList.add('open');
+        document.getElementById('quizResult').innerHTML = '';
+    }
+
+    function closeQuiz() {
+        document.getElementById('quizOverlay').classList.remove('open');
+    }
+
+    async function submitQuiz() {
+        const usage = document.getElementById('quizUsage').value;
+        const budget = document.getElementById('quizBudget').value || 5000;
+        const resultDiv = document.getElementById('quizResult');
+
+        resultDiv.innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-secondary)">Se cauta...</div>';
+
+        const userData = localStorage.getItem('loggedUser');
+        const userId = userData ? JSON.parse(userData).id : null;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/quiz/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    usage,
+                    budget,
+                    userId,
+                    quizData: JSON.stringify({ usage, budget })
+                })
+            });
+            const data = await res.json();
+
+            if (data.productId) {
+                resultDiv.innerHTML = `
+                    <div class="quiz-result">
+                        <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">${data.message}</div>
+                        <div class="quiz-result-name">${data.productName}</div>
+                        <div style="font-size:13px; color:var(--text-secondary);">${data.productBrand}</div>
+                        <div class="quiz-result-price">${data.productPrice} lei</div>
+                        <a href="product.html?id=${data.productId}"
+                           style="display:inline-block; margin-top:10px; padding:8px 16px; background:var(--accent); color:white; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none;">
+                            Vezi produsul
+                        </a>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `<div class="quiz-result" style="border-color:var(--danger)">${data.message || 'Nu am gasit produse.'}</div>`;
+            }
+        } catch (e) {
+            resultDiv.innerHTML = '<div class="quiz-result" style="border-color:var(--danger)">Eroare de conexiune. Verifica serverul.</div>';
+        }
+    }
+
+</script>
+</body>
+
+</html>

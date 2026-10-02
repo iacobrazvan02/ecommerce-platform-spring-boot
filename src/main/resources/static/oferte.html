@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroTech - Oferte & Reduceri</title>
+    <meta name="description"
+        content="Oferte speciale și reduceri la produse ElectroTech. Prețuri reduse pentru o perioadă limitată.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #0071e3;
+            --accent-hover: #005bb5;
+            --red: #e53935;
+            --bg: #000000;
+            --bg-secondary: #111111;
+            --card: #1a1a1a;
+            --white: #f5f5f7;
+            --text: #f5f5f7;
+            --text-secondary: #86868b;
+            --border: #2d2d2d;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .user-actions a:hover,
+        .user-actions span:hover {
+            color: var(--accent);
+        }
+
+        .logout-btn {
+            color: var(--danger) !important;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 40px 80px;
+        }
+
+        .offers-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offers-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(229, 57, 53, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .offers-hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .offers-hero h1 .red {
+            color: var(--red);
+        }
+
+        .offers-hero p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .offer-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .offer-card:hover {
+            border-color: var(--red);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(229, 57, 53, 0.15);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--red);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-category {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-name {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .card-brand {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .card-prices {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .price-new {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--red);
+        }
+
+        .price-new .currency {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .price-savings {
+            font-size: 12px;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .offer-timer {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-actions {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .buy-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--red);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .buy-btn:hover {
+            background: #c62828;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        .empty-state .browse-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .empty-state .browse-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .offer-card {
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        .offer-card:nth-child(2) {
+            animation-delay: 0.06s;
+        }
+
+        .offer-card:nth-child(3) {
+            animation-delay: 0.12s;
+        }
+
+        .offer-card:nth-child(4) {
+            animation-delay: 0.18s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px 20px 60px;
+            }
+
+            .header-inner {
+                padding: 0 20px;
+            }
+
+            .offers-hero {
+                padding: 32px 24px;
+            }
+
+            .offers-hero h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">Electro<span>Tech</span></a>
+            <div class="user-actions" id="userNav"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="offers-hero">
+            <h1>Oferte <span class="red">Speciale</span></h1>
+            <p>Produse cu reduceri pentru o perioadă limitată. Profită acum!</p>
+        </div>
+
+        <div class="offers-grid" id="offersGrid">
+            <div class="empty-state">
+                <div class="empty-icon">⏳</div>
+                <h3>Se încarcă ofertele...</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+        © 2026 ElectroTech Store. Toate drepturile rezervate.
+    </footer>
+
+    <script>
+        function initAuth() {
+            const nav = document.getElementById('userNav');
+            const userData = localStorage.getItem('loggedUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                const userName = user.email.includes('@') ? user.email.split('@')[0] : user.email;
+                let html = `
+                <span style="font-size:13px">Salut, <strong>${userName}</strong></span>
+                <a href="profil.html" style="color: var(--accent); font-weight: 600;">👤 Profil</a>
+                <a href="wishlist.html" style="color: #e53935; font-weight: 600;">Favorite</a>
+                <a href="oferte.html" style="color: var(--red); font-weight: 600;">Oferte</a>
+                <a href="cart.html">🛒 Coș</a>
+            `;
+                if (user.role === 'ADMIN') {
+                    html += `<a href="admin.html" style="color: #ff3b30; font-weight: 700; border: 1px solid #ff3b30; padding: 4px 8px; border-radius: 6px;">⚙️ Admin</a>`;
+                }
+                html += `<span class="logout-btn" onclick="logout()" style="cursor:pointer; color: #ff3b30;">Logout</span>`;
+                nav.innerHTML = html;
+            } else {
+                nav.innerHTML = `
+                <a href="oferte.html" style="color: var(--red); font-weight: 600;">Oferte</a>
+                <a href="login.html">Autentificare</a>
+                <a href="register.html" style="margin-left:10px">Cont Nou</a>
+            `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'index.html';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        async function loadOffers() {
+            try {
+                const res = await fetch('http://localhost:8080/api/discounts');
+                const discounts = await res.json();
+                const grid = document.getElementById('offersGrid');
+
+                if (!discounts || discounts.length === 0) {
+                    grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">🏷️</div>
+                        <h3>Nu există oferte active</h3>
+                        <p>Revino mai târziu pentru reduceri speciale.</p>
+                        <a href="index.html" class="browse-btn">← Înapoi la magazin</a>
+                    </div>
+                `;
+                    return;
+                }
+
+                const imgPromises = discounts.map(d =>
+                    fetch(`http://localhost:8080/api/product-images/product/${d.product.id}`)
+                        .then(r => r.json()).catch(() => [])
+                );
+                const allImgs = await Promise.all(imgPromises);
+
+                grid.innerHTML = discounts.map((d, idx) => {
+                    const p = d.product;
+                    const imgUrl = allImgs[idx] && allImgs[idx].length > 0 ? allImgs[idx][0].imageUrl : 'https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine';
+                    const catName = p.category && typeof p.category === 'object' ? p.category.name : (p.category || 'Accesorii');
+                    const originalPrice = p.price;
+                    const discountedPrice = (originalPrice * (1 - d.discountPercent / 100)).toFixed(2);
+                    const savings = (originalPrice - discountedPrice).toFixed(2);
+
+                    const now = new Date();
+                    const expiry = Array.isArray(d.activeUntil)
+                        ? new Date(d.activeUntil[0], d.activeUntil[1] - 1, d.activeUntil[2], d.activeUntil[3] || 0, d.activeUntil[4] || 0)
+                        : new Date(d.activeUntil);
+                    const daysLeft = Math.max(0, Math.ceil((expiry - now) / (1000 * 60 * 60 * 24)));
+                    const timerText = daysLeft > 1 ? `Expiră în ${daysLeft} zile` :
+                        daysLeft === 1 ? 'Expiră mâine!' : 'Ultima zi!';
+
+                    return `
+                    <div class="offer-card" onclick="window.location.href='product.html?id=${p.id}'">
+                        <div class="discount-badge">-${d.discountPercent}%</div>
+                        <img class="card-image" src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine'">
+                        <div class="card-body">
+                            <div class="card-category">${catName}</div>
+                            <div class="card-name">${p.name}</div>
+                            <div class="card-brand">Brand: ${p.brand || '—'}</div>
+                            <div class="card-prices">
+                                <span class="price-old">${originalPrice} lei</span>
+                                <span class="price-new">${discountedPrice} <span class="currency">lei</span></span>
+                            </div>
+                            <div class="price-savings">Economisești ${savings} lei</div>
+                            <div class="offer-timer">⏰ ${timerText}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="buy-btn" onclick="event.stopPropagation(); addToCart(${p.id})">
+                                Adaugă în coș
+                            </button>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Eroare:', err);
+                document.getElementById('offersGrid').innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Eroare de conexiune</h3>
+                    <p>Serverul nu răspunde.</p>
+                    <a href="index.html" class="browse-btn">← Înapoi la magazin</a>
+                </div>
+            `;
+            }
+        }
+
+        async function addToCart(productId) {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) {
+                alert('Loghează-te pentru a cumpăra!');
+                window.location.href = 'login.html';
+                return;
+            }
+            const user = JSON.parse(userData);
+            try {
+                const res = await fetch('http://localhost:8080/api/orders/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, productId, quantity: 1 })
+                });
+                if (res.ok) showToast('Produs adăugat în coș!');
+                else showToast('Eroare la adăugare!', 'error');
+            } catch (err) { console.error(err); showToast('Eroare de conexiune!', 'error'); }
+        }
+
+        function logAccess(actionName) {
+            const userData = localStorage.getItem('loggedUser');
+            const email = userData ? JSON.parse(userData).email : "Vizitator Anonim";
+            fetch('http://localhost:8080/api/logs/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail: email, action: actionName, pageUrl: window.location.href })
+            }).catch(() => { });
+        }
+
+        initAuth();
+        loadOffers();
+        logAccess("Vizualizare Pagina Oferte");
+    </script>
+</body>
+
+</html>

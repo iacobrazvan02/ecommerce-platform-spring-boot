@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElectroTech - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #0071e3;
+      --accent-hover: #005bb5;
+      --red: #e53935;
+      --red-hover: #c62828;
+      --bg: #000000;
+      --bg-secondary: #111111;
+      --card: #1c1c1e;
+      --border: #2c2c2e;
+      --text: #f5f5f7;
+      --text-secondary: #86868b;
+      --success: #34c759;
+      --danger: #ff3b30;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: var(--red);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-actions a,
+    .header-actions span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .header-actions a:hover,
+    .header-actions span:hover {
+      color: var(--accent);
+    }
+
+    .logout-btn {
+      color: var(--danger) !important;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: -1px;
+    }
+
+    h1 .accent {
+      color: var(--accent);
+    }
+
+    .admin-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #prediction-text {
+      font-size: 18px;
+      margin-top: 15px;
+    }
+
+    #prediction-text strong {
+      color: var(--accent);
+      font-size: 22px;
+      text-shadow: 0 0 10px rgba(0, 113, 227, 0.4);
+    }
+
+    .ml-top-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ml-top-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: border-color 0.2s;
+    }
+
+    .ml-top-list li:first-child {
+      border-color: var(--accent);
+      background: rgba(0, 113, 227, 0.08);
+    }
+
+    .ml-rank {
+      font-size: 20px;
+      font-weight: 700;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .ml-top-list li:nth-child(1) .ml-rank { color: #FFD700; }
+    .ml-top-list li:nth-child(2) .ml-rank { color: #C0C0C0; }
+    .ml-top-list li:nth-child(3) .ml-rank { color: #CD7F32; }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 16px;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #2c2c2e;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .product-tag {
+      background: #2c2c2e;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 5px;
+      border: 1px solid #3a3a3c;
+    }
+
+    .action-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 6px;
+    }
+
+    .action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 113, 227, 0.08);
+    }
+
+    .action-btn.delete:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(255, 59, 48, 0.08);
+    }
+
+    /* Stock badge */
+    .stock-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    .stock-badge.in-stock {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--success);
+    }
+
+    .stock-badge.out {
+      background: rgba(255, 59, 48, 0.15);
+      color: var(--danger);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .modal-btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .modal-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .modal-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .modal-btn.secondary:hover {
+      border-color: var(--text-secondary);
+      color: var(--text);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      z-index: 3000;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    .footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 30px 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      .header-inner {
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      td,
+      th {
+        padding: 10px 8px;
+      }
+
+      .modal {
+        padding: 24px;
+        margin: 0 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">Electro<span>Tech</span></a>
+      <div class="header-actions">
+        <a href="index.html">← Magazin</a>
+        <span class="logout-btn" onclick="logout()" style="cursor:pointer">Logout</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Dashboard <span class="accent">Admin</span></h1>
+
+    <div class="admin-card">
+      <div class="card-title">Predicție Machine Learning (Sezon 2026)</div>
+      <p id="prediction-text">Se rulează scriptul Python...</p>
+      <ul class="ml-top-list" id="prediction-top" style="display:none;"></ul>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-header">
+        <div class="card-title">📦 Gestionare Produse</div>
+        <button class="action-btn" onclick="openAddModal()"
+          style="background: var(--accent); color: #fff; font-weight: 600; padding: 8px 18px; border-radius: 8px; cursor: pointer; border: none;">+
+          Adaugă Produs</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Produs</th>
+            <th>Brand</th>
+            <th>Categorie</th>
+            <th>Preț</th>
+            <th>Stoc</th>
+            <th>Acțiuni</th>
+          </tr>
+        </thead>
+        <tbody id="products-body"></tbody>
+      </table>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-title">🧾 Istoric Comenzi Clienți</div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Produse Achizitionate</th>
+            <th>Total</th>
+            <th>Adresa livrare</th>
+            <th>Plata</th>
+            <th>Livrare</th>
+            <th>Data si Ora</th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-title">📍 Adrese Clienți</div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Stradă</th>
+            <th>Oraș</th>
+            <th>Cod poștal</th>
+            <th>Implicită</th>
+          </tr>
+        </thead>
+        <tbody id="addresses-body"></tbody>
+      </table>
+    </div>
+
+    <div class="admin-card">
+      <div class="card-header">
+        <div class="card-title">🏷️ Gestionare Oferte / Discounturi</div>
+      </div>
+
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
+        <div
+          style="flex: 1; min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+          <div
+            style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+            Adaugă discount pe produs</div>
+          <div class="form-group">
+            <label>Produs</label>
+            <select id="discountProduct" class="form-group select"
+              style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;"></select>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex:1">
+              <label>Reducere (%)</label>
+              <input type="number" id="discountPercent" min="1" max="90" placeholder="10"
+                style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;">
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>Expiră la</label>
+              <input type="datetime-local" id="discountUntil"
+                style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;">
+            </div>
+          </div>
+          <button class="modal-btn primary" onclick="addProductDiscount()" style="width:100%; margin-top:8px;">Adaugă
+            discount</button>
+        </div>
+
+        <div
+          style="flex: 1; min-width: 280px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+          <div
+            style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">
+            Adaugă discount pe brand</div>
+          <div class="form-group">
+            <label>Brand</label>
+            <select id="discountBrand"
+              style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;"></select>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex:1">
+              <label>Reducere (%)</label>
+              <input type="number" id="discountBrandPercent" min="1" max="90" placeholder="15"
+                style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;">
+            </div>
+            <div class="form-group" style="flex:1">
+              <label>Expiră la</label>
+              <input type="datetime-local" id="discountBrandUntil"
+                style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text); font-family:inherit;">
+            </div>
+          </div>
+          <button class="modal-btn primary" onclick="addBrandDiscount()" style="width:100%; margin-top:8px;">Aplică pe
+            tot brandul</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Produs</th>
+            <th>Reducere</th>
+            <th>Preț original</th>
+            <th>Preț redus</th>
+            <th>Expiră la</th>
+            <th>Status</th>
+            <th>Acțiuni</th>
+          </tr>
+        </thead>
+        <tbody id="discounts-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <h2>Editare Produs</h2>
+      <input type="hidden" id="editProductId">
+      <div class="form-group">
+        <label>Nume Produs</label>
+        <input type="text" id="editName" placeholder="Nume produs">
+      </div>
+      <div class="form-group">
+        <label>Brand</label>
+        <input type="text" id="editBrand" placeholder="Brand">
+      </div>
+      <div class="form-group">
+        <label>Preț (lei)</label>
+        <input type="number" id="editPrice" step="0.01" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>Stoc</label>
+        <input type="number" id="editStock" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Categorie</label>
+        <select id="editCategory"></select>
+      </div>
+      <div class="form-group">
+        <label>Specificații (JSON)</label>
+        <input type="text" id="editSpecs" placeholder='{"RAM": "8GB", "Ecran": "OLED"}'>
+      </div>
+      <div class="form-group">
+        <label>Imagini produs</label>
+        <div id="editImagesContainer" style="margin-bottom: 8px;"></div>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="editNewImageUrl" placeholder="URL imagine nouă..." style="flex: 1;">
+          <button class="modal-btn primary" onclick="addImageToProduct()" style="white-space: nowrap;">+ Adaugă</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="closeEditModal()">Anulează</button>
+        <button class="modal-btn primary" onclick="saveProduct()">Salvează</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <h2>Adaugă Produs Nou</h2>
+      <div class="form-group">
+        <label>Nume Produs</label>
+        <input type="text" id="addName" placeholder="ex: iPhone 16 Pro">
+      </div>
+      <div class="form-group">
+        <label>Brand</label>
+        <input type="text" id="addBrand" placeholder="ex: Apple">
+      </div>
+      <div class="form-group">
+        <label>Preț (lei)</label>
+        <input type="number" id="addPrice" step="0.01" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>Stoc</label>
+        <input type="number" id="addStock" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Categorie</label>
+        <select id="addCategory"></select>
+      </div>
+      <div class="form-group">
+        <label>Specificații (JSON)</label>
+        <input type="text" id="addSpecs" placeholder='{"RAM": "8GB", "Ecran": "OLED"}'>
+      </div>
+      <div class="form-group">
+        <label>Imagini (opțional)</label>
+        <div id="addImagesContainer">
+          <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+            <input type="text" class="add-image-url" placeholder="URL imagine..." style="flex: 1;">
+            <button class="modal-btn secondary" onclick="this.parentElement.remove()"
+              style="padding: 6px 10px; font-size: 12px;">✕</button>
+          </div>
+        </div>
+        <button class="modal-btn secondary" onclick="addImageField()"
+          style="font-size: 12px; padding: 4px 12px; margin-top: 4px;">+ Încă o imagine</button>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="closeAddModal()">Anulează</button>
+        <button class="modal-btn primary" onclick="createProduct()">Adaugă Produs</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    © 2026 ElectroTech Store. Toate drepturile rezervate.
+  </footer>
+
+  <script>
+
+    function logout() {
+      localStorage.removeItem('loggedUser');
+      window.location.href = 'index.html';
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => { toast.classList.remove('show'); }, 2500);
+    }
+
+    async function loadML() {
+      try {
+        const res = await fetch('http://localhost:8080/api/products/predict-2026');
+        const raw = await res.text();
+        const top = JSON.parse(raw);
+
+        document.getElementById('prediction-text').innerHTML =
+          `Best-seller-ul 2026 va fi: <strong>${top[0]}</strong>`;
+
+        const list = document.getElementById('prediction-top');
+        list.style.display = 'flex';
+        list.innerHTML = top.map((name, i) =>
+          `<li><span class="ml-rank">Locul ${i+1}:</span> ${name}</li>`
+        ).join('');
+      } catch (e) {
+        document.getElementById('prediction-text').innerText = "Eroare la conectarea cu motorul ML.";
+      }
+    }
+
+    let allCategories = [];
+
+    async function loadCategories() {
+      try {
+        const res = await fetch('http://localhost:8080/api/categories');
+        allCategories = await res.json();
+      } catch (e) {
+        console.error('Eroare categorii:', e);
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('http://localhost:8080/api/products');
+        const products = await res.json();
+        const body = document.getElementById('products-body');
+
+        body.innerHTML = products.map(p => {
+          const catName = p.category && typeof p.category === 'object' ? p.category.name : (p.category || '—');
+          const catId = p.category && typeof p.category === 'object' ? p.category.id : '';
+          const stock = p.stockQuantity !== undefined ? p.stockQuantity : (p.stock || 0);
+          const inStock = stock > 0;
+
+          return `
+          <tr>
+            <td style="color: var(--text-secondary)">#${p.id}</td>
+            <td style="font-weight: 600">${p.name}</td>
+            <td>${p.brand || '—'}</td>
+            <td>${catName}</td>
+            <td style="color: var(--accent); font-weight: 600">${p.price} lei</td>
+            <td>
+              <span class="stock-badge ${inStock ? 'in-stock' : 'out'}">${stock} buc</span>
+            </td>
+            <td>
+              <button class="action-btn" onclick="openEditModal(${p.id})">
+                Editează
+              </button>
+              <button class="action-btn delete" onclick="deleteProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}')">
+                Șterge
+              </button>
+            </td>
+          </tr>
+        `;
+        }).join('');
+      } catch (e) {
+        console.error('Eroare produse:', e);
+      }
+    }
+
+    async function openEditModal(id) {
+      try {
+        const res = await fetch(`http://localhost:8080/api/products/${id}`);
+        const p = await res.json();
+        const catId = p.category && typeof p.category === 'object' ? p.category.id : '';
+        const stock = p.stockQuantity !== undefined ? p.stockQuantity : (p.stock || 0);
+
+        document.getElementById('editProductId').value = p.id;
+        document.getElementById('editName').value = p.name || '';
+        document.getElementById('editBrand').value = p.brand || '';
+        document.getElementById('editPrice').value = p.price || '';
+        document.getElementById('editStock').value = stock;
+        document.getElementById('editSpecs').value = p.specs || '';
+
+        const select = document.getElementById('editCategory');
+        select.innerHTML = allCategories.map(c =>
+          `<option value="${c.id}" ${c.id === catId ? 'selected' : ''}>${c.name}</option>`
+        ).join('');
+
+        await loadEditImages(id);
+        document.getElementById('editModal').classList.add('active');
+      } catch (e) {
+        console.error(e);
+        showToast('Eroare la încărcarea produsului!', 'error');
+      }
+    }
+
+    async function loadEditImages(productId) {
+      try {
+        const res = await fetch(`http://localhost:8080/api/product-images/product/${productId}`);
+        const images = await res.json();
+        const container = document.getElementById('editImagesContainer');
+
+        if (images.length === 0) {
+          container.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 6px;">Nicio imagine adăugată</div>';
+        } else {
+          container.innerHTML = images.map(img => `
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; padding: 6px 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+            <img src="${img.imageUrl}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" onerror="this.src='https://via.placeholder.com/40'">
+            <span style="flex: 1; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${img.imageUrl}</span>
+            <button class="action-btn delete" onclick="deleteEditImage(${img.id}, ${productId})" style="padding: 4px 8px; font-size: 11px;">Șterge</button>
+          </div>
+        `).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function addImageToProduct() {
+      const productId = document.getElementById('editProductId').value;
+      const urlInput = document.getElementById('editNewImageUrl');
+      const url = urlInput.value.trim();
+      if (!url) { showToast('Introdu un URL!', 'error'); return; }
+
+      try {
+        const res = await fetch('http://localhost:8080/api/product-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, imageUrl: url })
+        });
+        if (res.ok) {
+          urlInput.value = '';
+          await loadEditImages(productId);
+          showToast('Imagine adăugată!');
+        }
+      } catch (e) { showToast('Eroare!', 'error'); }
+    }
+
+    async function deleteEditImage(imageId, productId) {
+      try {
+        await fetch(`http://localhost:8080/api/product-images/${imageId}`, { method: 'DELETE' });
+        await loadEditImages(productId);
+        showToast('Imagine ștearsă!');
+      } catch (e) { showToast('Eroare!', 'error'); }
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    document.getElementById('editModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('editModal')) closeEditModal();
+    });
+
+    async function saveProduct() {
+      const id = document.getElementById('editProductId').value;
+      const specs = document.getElementById('editSpecs').value.trim();
+      const data = {
+        name: document.getElementById('editName').value,
+        brand: document.getElementById('editBrand').value,
+        price: document.getElementById('editPrice').value,
+        stockQuantity: document.getElementById('editStock').value,
+        categoryId: document.getElementById('editCategory').value,
+        specs: specs || null
+      };
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          closeEditModal();
+          showToast('Produs actualizat cu succes!');
+          loadProducts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Eroare la salvare!', 'error');
+        }
+      } catch (e) {
+        console.error(e);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    function addImageField() {
+      const container = document.getElementById('addImagesContainer');
+      const row = document.createElement('div');
+      row.style.cssText = 'display: flex; gap: 8px; margin-bottom: 6px;';
+      row.innerHTML = `
+      <input type="text" class="add-image-url" placeholder="URL imagine..." style="flex: 1;">
+      <button class="modal-btn secondary" onclick="this.parentElement.remove()" style="padding: 6px 10px; font-size: 12px;">✕</button>
+    `;
+      container.appendChild(row);
+    }
+
+    function openAddModal() {
+      document.getElementById('addName').value = '';
+      document.getElementById('addBrand').value = '';
+      document.getElementById('addPrice').value = '';
+      document.getElementById('addStock').value = '';
+      document.getElementById('addSpecs').value = '';
+      document.getElementById('addImagesContainer').innerHTML = `
+      <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+        <input type="text" class="add-image-url" placeholder="URL imagine..." style="flex: 1;">
+        <button class="modal-btn secondary" onclick="this.parentElement.remove()" style="padding: 6px 10px; font-size: 12px;">✕</button>
+      </div>
+    `;
+
+      const select = document.getElementById('addCategory');
+      select.innerHTML = allCategories.map(c =>
+        `<option value="${c.id}">${c.name}</option>`
+      ).join('');
+
+      document.getElementById('addModal').classList.add('active');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('active');
+    }
+
+    document.getElementById('addModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('addModal')) closeAddModal();
+    });
+
+    async function createProduct() {
+      const name = document.getElementById('addName').value.trim();
+      const brand = document.getElementById('addBrand').value.trim();
+      const price = document.getElementById('addPrice').value;
+      const stock = document.getElementById('addStock').value;
+      const categoryId = document.getElementById('addCategory').value;
+      const specs = document.getElementById('addSpecs').value.trim();
+      const imageUrls = [...document.querySelectorAll('.add-image-url')]
+        .map(input => input.value.trim())
+        .filter(url => url.length > 0);
+
+      if (!name || !price || !stock) {
+        showToast('Completează cel puțin: nume, preț și stoc!', 'error');
+        return;
+      }
+
+      const data = { name, brand, price, stockQuantity: stock, categoryId };
+      if (specs) data.specs = specs;
+
+      try {
+        const res = await fetch('http://localhost:8080/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          const product = await res.json();
+
+          for (const imageUrl of imageUrls) {
+            await fetch('http://localhost:8080/api/product-images', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ productId: product.id, imageUrl: imageUrl })
+            });
+          }
+
+          closeAddModal();
+          showToast('Produs adăugat cu succes!');
+          loadProducts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Eroare la creare!', 'error');
+        }
+      } catch (e) {
+        console.error(e);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    async function deleteProduct(id, name) {
+      if (!confirm(`Ești sigur că vrei să ștergi produsul "${name}"?`)) return;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/products/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (res.ok) {
+          showToast('Produs șters cu succes!');
+          loadProducts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Eroare la ștergere!', 'error');
+        }
+      } catch (e) {
+        console.error(e);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    function formatJavaDate(dateObj) {
+      if (!dateObj) return "N/A";
+      if (Array.isArray(dateObj)) {
+        const d = new Date(dateObj[0], dateObj[1] - 1, dateObj[2], dateObj[3] || 0, dateObj[4] || 0);
+        return d.toLocaleString('ro-RO');
+      }
+      const d = new Date(dateObj);
+      return isNaN(d) ? "Data Invalidă" : d.toLocaleString('ro-RO');
+    }
+
+    async function loadOrders() {
+      try {
+        const res = await fetch('http://localhost:8080/api/orders/admin/all');
+        const orders = await res.json();
+        const body = document.getElementById('orders-body');
+
+        body.innerHTML = orders.map(o => {
+          const productsHtml = o.orderItems && o.orderItems.length > 0
+            ? o.orderItems.map(item => `<span class="product-tag">${item.product.name} (x${item.quantity})</span>`).join('')
+            : '<span style="color:#666">Fără detalii</span>';
+
+          const addrHtml = o.shippingAddress
+            ? `<div style="font-size:12px; color:var(--text-secondary)">${o.shippingAddress.street}, ${o.shippingAddress.city} ${o.shippingAddress.zipCode || ''}</div>`
+            : '<span style="color:#666; font-size:12px">—</span>';
+
+          const paymentLabels = { 'CARD': 'Card bancar', 'RAMBURS': 'Ramburs', 'TRANSFER_BANCAR': 'Transfer bancar' };
+          const deliveryLabels = { 'CURIER_STANDARD': 'Curier standard', 'CURIER_EXPRESS': 'Curier express' };
+
+          return `
+          <tr>
+            <td style="color: var(--text-secondary)">#${o.id}</td>
+            <td><div style="font-weight:600">${o.user ? o.user.email : 'Anonim'}</div></td>
+            <td>${productsHtml}</td>
+            <td style="color: var(--accent); font-weight: 600">${o.totalAmount.toFixed(2)} lei</td>
+            <td>${addrHtml}</td>
+            <td style="font-size:12px">${paymentLabels[o.paymentMethod] || o.paymentMethod || '—'}</td>
+            <td style="font-size:12px">${deliveryLabels[o.deliveryMethod] || o.deliveryMethod || '—'}</td>
+            <td>${formatJavaDate(o.orderDate)}</td>
+          </tr>
+        `;
+        }).join('');
+      } catch (e) {
+        console.error("Eroare la încărcarea comenzilor:", e);
+      }
+    }
+
+    async function populateDiscountDropdowns() {
+      try {
+        const res = await fetch('http://localhost:8080/api/products');
+        const products = await res.json();
+
+        const productSelect = document.getElementById('discountProduct');
+        productSelect.innerHTML = products.map(p =>
+          `<option value="${p.id}">${p.name} (${p.price} lei)</option>`
+        ).join('');
+
+        const brands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort();
+        const brandSelect = document.getElementById('discountBrand');
+        brandSelect.innerHTML = brands.map(b => `<option value="${b}">${b}</option>`).join('');
+      } catch (e) { console.error('Eroare dropdown discounturi:', e); }
+    }
+
+    async function loadDiscounts() {
+      try {
+        const res = await fetch('http://localhost:8080/api/discounts/all');
+        const discounts = await res.json();
+        const body = document.getElementById('discounts-body');
+
+        if (discounts.length === 0) {
+          body.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text-secondary); padding:20px;">Nu există discounturi setate.</td></tr>';
+          return;
+        }
+
+        body.innerHTML = discounts.map(d => {
+          const p = d.product;
+          const discountedPrice = (p.price * (1 - d.discountPercent / 100)).toFixed(2);
+
+          const now = new Date();
+          const expiry = Array.isArray(d.activeUntil)
+            ? new Date(d.activeUntil[0], d.activeUntil[1] - 1, d.activeUntil[2], d.activeUntil[3] || 0, d.activeUntil[4] || 0)
+            : new Date(d.activeUntil);
+          const isActive = expiry > now;
+
+          return `
+          <tr>
+            <td style="color: var(--text-secondary)">#${d.id}</td>
+            <td style="font-weight: 600">${p.name}</td>
+            <td style="color: var(--danger); font-weight: 700">-${d.discountPercent}%</td>
+            <td>${p.price} lei</td>
+            <td style="color: var(--success); font-weight: 600">${discountedPrice} lei</td>
+            <td>${formatJavaDate(d.activeUntil)}</td>
+            <td>
+              <span class="stock-badge ${isActive ? 'in-stock' : 'out'}">${isActive ? 'Activ' : 'Expirat'}</span>
+            </td>
+            <td>
+              <button class="action-btn delete" onclick="deleteDiscount(${d.id})">Șterge</button>
+            </td>
+          </tr>
+        `;
+        }).join('');
+      } catch (e) { console.error('Eroare discounturi:', e); }
+    }
+
+    async function addProductDiscount() {
+      const productId = document.getElementById('discountProduct').value;
+      const discountPercent = document.getElementById('discountPercent').value;
+      const activeUntil = document.getElementById('discountUntil').value;
+
+      if (!productId || !discountPercent || !activeUntil) {
+        showToast('Completează toate câmpurile!', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:8080/api/discounts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productId, discountPercent: parseInt(discountPercent), activeUntil })
+        });
+
+        if (res.ok) {
+          showToast('Discount adăugat cu succes!');
+          document.getElementById('discountPercent').value = '';
+          document.getElementById('discountUntil').value = '';
+          loadDiscounts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Eroare!', 'error');
+        }
+      } catch (e) { console.error(e); showToast('Eroare de conexiune!', 'error'); }
+    }
+
+    async function addBrandDiscount() {
+      const brand = document.getElementById('discountBrand').value;
+      const discountPercent = document.getElementById('discountBrandPercent').value;
+      const activeUntil = document.getElementById('discountBrandUntil').value;
+
+      if (!brand || !discountPercent || !activeUntil) {
+        showToast('Completează toate câmpurile!', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:8080/api/discounts/brand', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand, discountPercent: parseInt(discountPercent), activeUntil })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          showToast(data.message || 'Discount aplicat pe brand!');
+          document.getElementById('discountBrandPercent').value = '';
+          document.getElementById('discountBrandUntil').value = '';
+          loadDiscounts();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Eroare!', 'error');
+        }
+      } catch (e) { console.error(e); showToast('Eroare de conexiune!', 'error'); }
+    }
+
+    async function deleteDiscount(id) {
+      if (!confirm('Ești sigur că vrei să ștergi acest discount?')) return;
+      try {
+        const res = await fetch(`http://localhost:8080/api/discounts/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Discount șters!');
+          loadDiscounts();
+        } else {
+          showToast('Eroare la ștergere!', 'error');
+        }
+      } catch (e) { showToast('Eroare de conexiune!', 'error'); }
+    }
+
+    function logAccess(actionName) {
+      const userData = localStorage.getItem('loggedUser');
+      const email = userData ? JSON.parse(userData).email : "Vizitator Anonim";
+      fetch('http://localhost:8080/api/logs/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: email, action: actionName, pageUrl: window.location.href })
+      }).catch(() => { });
+    }
+
+    async function loadCustomerAddresses() {
+      try {
+        const res = await fetch('http://localhost:8080/api/addresses/all');
+        const addresses = await res.json();
+        const body = document.getElementById('addresses-body');
+
+        if (addresses.length === 0) {
+          body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-secondary); padding:20px;">Nu există adrese salvate.</td></tr>';
+          return;
+        }
+
+        body.innerHTML = addresses.map(a => {
+          const email = a.user ? a.user.email : 'Necunoscut';
+          return `
+          <tr>
+            <td style="color: var(--text-secondary)">#${a.id}</td>
+            <td style="font-weight: 600">${email}</td>
+            <td>${a.street || '—'}</td>
+            <td>${a.city || '—'}</td>
+            <td>${a.zipCode || '—'}</td>
+            <td>${a.isDefault ? '<span class="stock-badge in-stock">Da</span>' : '<span class="stock-badge out">Nu</span>'}</td>
+          </tr>
+        `;
+        }).join('');
+      } catch (e) {
+        console.error('Eroare la încărcarea adreselor:', e);
+      }
+    }
+
+    const user = JSON.parse(localStorage.getItem('loggedUser'));
+    if (!user || user.role !== 'ADMIN') {
+      alert("Acces interzis! Doar administratorii pot vedea aceste date.");
+      window.location.href = "index.html";
+    } else {
+      loadML();
+      loadCategories().then(() => loadProducts());
+      loadOrders();
+      loadCustomerAddresses();
+      populateDiscountDropdowns();
+      loadDiscounts();
+      logAccess("Vizualizare Dashboard Admin");
+    }
+  </script>
+</body>
+
+</html>

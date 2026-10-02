@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroTech - Coșul Tău</title>
+    <meta name="description"
+        content="Coșul tău de cumpărături ElectroTech — vezi produsele adăugate și finalizează comanda.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent: #0071e3;
+            --accent-hover: #005bb5;
+            --red: #e53935;
+            --red-hover: #c62828;
+            --bg: #000000;
+            --bg-secondary: #111111;
+            --card: #1a1a1a;
+            --card-hover: #222222;
+            --white: #f5f5f7;
+            --text: #f5f5f7;
+            --text-secondary: #86868b;
+            --border: #2d2d2d;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --radius: 12px;
+            --nav-height: 64px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-actions a,
+        .user-actions span {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .user-actions a:hover,
+        .user-actions span:hover {
+            color: var(--accent);
+        }
+
+        .logout-btn {
+            color: var(--danger) !important;
+        }
+
+        /* Container */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 48px 40px 80px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .cart-count {
+            background: var(--accent);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .back-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cart-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0;
+            display: flex;
+            align-items: stretch;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .cart-item:hover {
+            border-color: #444;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .cart-item-image {
+            width: 120px;
+            min-height: 120px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .cart-item-body {
+            flex: 1;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-category {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .cart-item-name:hover {
+            color: var(--accent);
+        }
+
+        .cart-item-quantity {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .qty-btn:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+
+        .qty-btn:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+
+        .qty-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .qty-btn:disabled:hover {
+            background: var(--card);
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .qty-display {
+            width: 40px;
+            height: 30px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            border-left: none;
+            border-right: none;
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .cart-item-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--white);
+            white-space: nowrap;
+        }
+
+        .cart-item-price .currency {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .remove-item-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-item-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .cart-summary {
+            margin-top: 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .summary-row.total {
+            border-top: 1px solid var(--border);
+            margin-top: 12px;
+            padding-top: 20px;
+        }
+
+        .summary-row.total .label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .summary-row.total .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .summary-row .value .currency {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .checkout-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+
+        .empty-state .browse-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .empty-state .browse-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        .footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cart-item {
+            animation: fadeInUp 0.35s ease forwards;
+        }
+
+        .cart-item:nth-child(2) {
+            animation-delay: 0.05s;
+        }
+
+        .cart-item:nth-child(3) {
+            animation-delay: 0.1s;
+        }
+
+        .cart-item:nth-child(4) {
+            animation-delay: 0.15s;
+        }
+
+        .cart-item:nth-child(5) {
+            animation-delay: 0.2s;
+        }
+
+        .cart-item:nth-child(6) {
+            animation-delay: 0.25s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 20px 60px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .header-inner {
+                padding: 0 20px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+            }
+
+            .cart-item-image {
+                width: 100%;
+                height: 160px;
+            }
+
+            .cart-item-body {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .cart-item-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-summary {
+                padding: 20px;
+            }
+        }
+
+        .address-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-top: 16px;
+        }
+
+        .address-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .address-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .address-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .address-input:focus {
+            border-color: var(--accent);
+        }
+
+        .address-saved {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(52, 199, 89, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .address-saved:hover {
+            border-color: var(--success);
+            background: rgba(52, 199, 89, 0.1);
+        }
+
+        .address-saved.selected {
+            border-color: var(--success);
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--success);
+        }
+
+        .address-saved .addr-text {
+            flex: 1;
+        }
+
+        .address-saved .addr-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .addr-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .addr-action-btn.edit:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 113, 227, 0.1);
+        }
+
+        .addr-action-btn.delete:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .address-or-divider {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 12px 0;
+            position: relative;
+        }
+
+        .address-or-divider::before,
+        .address-or-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .address-or-divider::before {
+            left: 0;
+        }
+
+        .address-or-divider::after {
+            right: 0;
+        }
+
+        .addr-save-btn {
+            padding: 10px 18px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .addr-save-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .checkout-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .checkout-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            border-color: #444;
+        }
+
+        .option-card.selected {
+            border-color: var(--accent);
+            background: rgba(0, 113, 227, 0.08);
+        }
+
+        .option-radio {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: border-color 0.2s;
+        }
+
+        .option-card.selected .option-radio {
+            border-color: var(--accent);
+        }
+
+        .option-radio-inner {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: transparent;
+            transition: background 0.2s;
+        }
+
+        .option-card.selected .option-radio-inner,
+        .saved-card-item.selected .option-radio-inner {
+            background: var(--accent);
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .option-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .option-price {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .option-price.paid {
+            color: var(--text);
+        }
+
+        .map-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .map-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        #deliveryMap {
+            width: 100%;
+            height: 600px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            z-index: 1;
+        }
+
+
+        .summary-row.delivery {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .card-details-form {
+            margin-top: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: none;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        .card-details-form.visible {
+            display: block;
+        }
+
+        .card-form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-input {
+            flex: 1;
+            padding: 12px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'Inter', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .card-input:focus {
+            border-color: var(--accent);
+        }
+
+        .card-input::placeholder {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .card-input.small {
+            max-width: 120px;
+        }
+
+        .card-input.cvv {
+            max-width: 90px;
+        }
+
+        .card-form-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .saved-cards-list {
+            margin-bottom: 12px;
+        }
+
+        .saved-card-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .saved-card-item:hover {
+            border-color: #444;
+        }
+
+        .saved-card-item.selected {
+            border-color: var(--accent);
+            background: rgba(0, 113, 227, 0.08);
+        }
+
+        .saved-card-brand {
+            width: 38px;
+            height: 24px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .saved-card-brand.visa {
+            background: linear-gradient(135deg, #1a1f71, #2d5fdc);
+        }
+
+        .saved-card-brand.mastercard {
+            background: linear-gradient(135deg, #eb001b, #f79e1b);
+        }
+
+        .saved-card-brand.amex {
+            background: linear-gradient(135deg, #006fcf, #00aeef);
+        }
+
+        .saved-card-brand.card {
+            background: linear-gradient(135deg, #444, #666);
+        }
+
+        .saved-card-number {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .saved-card-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .saved-card-or {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin: 10px 0;
+        }
+
+        .transfer-details-form {
+            margin-top: 12px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: none;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        .transfer-details-form.visible {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">Electro<span>Tech</span></a>
+            <div class="user-actions" id="userNav"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1>Coșul tău</h1>
+                <span class="cart-count" id="cartCount" style="display:none">0</span>
+            </div>
+            <a href="index.html" class="back-link">← Continuă cumpărăturile</a>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+            <div class="empty-state">
+                <div class="empty-icon">⏳</div>
+                <h3>Se încarcă...</h3>
+                <p>Așteptăm datele de la server.</p>
+            </div>
+        </div>
+
+        <div class="cart-summary" id="cartSummary" style="display:none">
+            <div class="summary-row">
+                <span class="label">Produse în coș</span>
+                <span class="value" id="summaryCount">0</span>
+            </div>
+            <div class="summary-row total">
+                <span class="label">Total de plată</span>
+                <span class="value" id="summaryTotal">0 <span class="currency">lei</span></span>
+            </div>
+
+            <div class="address-section" id="addressSection">
+                <h3>📍 Adresa de livrare</h3>
+                <div id="savedAddresses"></div>
+                <div id="newAddressForm">
+                    <div class="address-or-divider" id="orDivider" style="display:none">sau adauga o adresa noua</div>
+                    <div class="address-row">
+                        <input class="address-input" id="addrStreet" placeholder="Strada, numar, bloc, ap." />
+                    </div>
+                    <div class="address-row">
+                        <input class="address-input" id="addrCity" placeholder="Oras" />
+                        <input class="address-input" id="addrZip" placeholder="Cod postal" style="max-width:140px" />
+                        <button class="addr-save-btn" onclick="saveNewAddress()">Salveaza adresa</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-section" id="paymentSection">
+                <h3>Modalitate de plata</h3>
+                <div class="option-group" id="paymentOptions">
+                    <div class="option-card selected" onclick="selectPayment('CARD', this)">
+                        <div class="option-radio">
+                            <div class="option-radio-inner"></div>
+                        </div>
+                        <div class="option-info">
+                            <div class="option-name">Card bancar</div>
+                            <div class="option-desc">Plata online securizata</div>
+                        </div>
+                    </div>
+                    <div class="option-card" onclick="selectPayment('RAMBURS', this)">
+                        <div class="option-radio">
+                            <div class="option-radio-inner"></div>
+                        </div>
+                        <div class="option-info">
+                            <div class="option-name">Ramburs la livrare</div>
+                            <div class="option-desc">Platesti la curier cand primesti coletul</div>
+                        </div>
+                    </div>
+                    <div class="option-card" onclick="selectPayment('TRANSFER_BANCAR', this)">
+                        <div class="option-radio">
+                            <div class="option-radio-inner"></div>
+                        </div>
+                        <div class="option-info">
+                            <div class="option-name">Transfer bancar</div>
+                            <div class="option-desc">Platesti prin ordin de plata</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-details-form visible" id="cardDetailsForm">
+                    <div class="saved-cards-list" id="savedCardsList"></div>
+                    <div id="newCardDivider" class="saved-card-or" style="display:none">sau introdu un card nou</div>
+                    <div class="card-form-label">Numar card</div>
+                    <div class="card-form-row">
+                        <input class="card-input" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19"
+                            oninput="formatCardNumber(this)">
+                    </div>
+                    <div class="card-form-row">
+                        <div style="flex:1">
+                            <div class="card-form-label">Data expirare</div>
+                            <input class="card-input small" id="cardExpiry" placeholder="LL/AA" maxlength="5"
+                                oninput="formatExpiry(this)">
+                        </div>
+                        <div>
+                            <div class="card-form-label">CVV</div>
+                            <input class="card-input cvv" id="cardCvv" placeholder="123" maxlength="3" type="password"
+                                oninput="this.value=this.value.replace(/\D/g,'')">
+                        </div>
+                    </div>
+                    <div class="card-form-label">Nume titular</div>
+                    <div class="card-form-row">
+                        <input class="card-input" id="cardHolder" placeholder="Numele de pe card">
+                    </div>
+                </div>
+
+                <div class="transfer-details-form" id="transferDetailsForm">
+                    <div class="card-form-label">IBAN</div>
+                    <div class="card-form-row">
+                        <input class="card-input" id="transferIban" placeholder="RO49AAAA1B31007593840000"
+                            maxlength="24" style="text-transform:uppercase">
+                    </div>
+                    <div class="card-form-row">
+                        <div style="flex:1">
+                            <div class="card-form-label">Nume titular cont</div>
+                            <input class="card-input" id="transferHolder" placeholder="Numele complet">
+                        </div>
+                        <div style="flex:1">
+                            <div class="card-form-label">Banca</div>
+                            <input class="card-input" id="transferBank" placeholder="Ex: BRD, BCR, ING">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-section" id="deliverySection">
+                <h3>Modalitate de livrare</h3>
+                <div class="option-group" id="deliveryOptions">
+                    <div class="option-card selected" onclick="selectDelivery('CURIER_STANDARD', this)">
+                        <div class="option-radio">
+                            <div class="option-radio-inner"></div>
+                        </div>
+                        <div class="option-info">
+                            <div class="option-name">Curier standard</div>
+                            <div class="option-desc">Livrare in 2-4 zile lucratoare</div>
+                        </div>
+                        <div class="option-price" id="standardPrice">Gratuit</div>
+                    </div>
+                    <div class="option-card" onclick="selectDelivery('CURIER_EXPRESS', this)">
+                        <div class="option-radio">
+                            <div class="option-radio-inner"></div>
+                        </div>
+                        <div class="option-info">
+                            <div class="option-name">Curier express</div>
+                            <div class="option-desc">Livrare in 24 de ore</div>
+                        </div>
+                        <div class="option-price paid">29.99 lei</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-section" id="mapSection">
+                <h3>Locatie livrare</h3>
+                <div id="deliveryMap"></div>
+            </div>
+
+            <button class="checkout-btn" id="checkoutBtn" onclick="confirmOrder()">Finalizeaza comanda</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <footer class="footer">
+        © 2026 ElectroTech Store. Toate drepturile rezervate.
+    </footer>
+
+    <script>
+        function initAuth() {
+            const nav = document.getElementById('userNav');
+            const userData = localStorage.getItem('loggedUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                const userName = user.email.includes('@') ? user.email.split('@')[0] : user.email;
+                let html = `
+                <span style="font-size:13px">Salut, <strong>${userName}</strong></span>
+                <a href="profil.html" style="color: var(--accent); font-weight: 600;">👤 Profil</a>
+                <a href="wishlist.html" style="color: #e53935; font-weight: 600;">Favorite</a>
+                <a href="cart.html" style="color: var(--accent); font-weight: 600;">🛒 Coș</a>
+            `;
+                if (user.role === 'ADMIN') {
+                    html += `<a href="admin.html" style="color: #ff3b30; font-weight: 700; border: 1px solid #ff3b30; padding: 4px 8px; border-radius: 6px;">⚙️ Admin</a>`;
+                }
+                html += `<span class="logout-btn" onclick="logout()" style="cursor:pointer; color: #ff3b30;">Logout</span>`;
+                nav.innerHTML = html;
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedUser');
+            window.location.href = 'index.html';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        async function loadCart() {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) { window.location.href = 'login.html'; return; }
+            const user = JSON.parse(userData);
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/orders/user/${user.id}`);
+                const orders = await response.json();
+
+                const itemsDiv = document.getElementById('cartItems');
+                const summaryDiv = document.getElementById('cartSummary');
+                const countBadge = document.getElementById('cartCount');
+
+                const cartOrder = orders.find(o => o.status === 'CART');
+
+                if (!cartOrder || !cartOrder.orderItems || cartOrder.orderItems.length === 0) {
+                    itemsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛒</div>
+                        <h3>Coșul tău este gol</h3>
+                        <p>Nu ai adăugat încă niciun produs în coș.</p>
+                        <a href="index.html" class="browse-btn">Explorează produsele →</a>
+                    </div>
+                `;
+                    summaryDiv.style.display = 'none';
+                    countBadge.style.display = 'none';
+                    return;
+                }
+
+                const items = cartOrder.orderItems;
+                const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+                countBadge.textContent = totalItems;
+                countBadge.style.display = 'inline-block';
+
+                const imgPromises = items.map(item =>
+                    fetch(`http://localhost:8080/api/product-images/product/${item.product.id}`)
+                        .then(r => r.json()).catch(() => [])
+                );
+                const allImgs = await Promise.all(imgPromises);
+
+                itemsDiv.innerHTML = items.map((item, idx) => {
+                    const p = item.product;
+                    const imgUrl = allImgs[idx] && allImgs[idx].length > 0 ? allImgs[idx][0].imageUrl : 'https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine';
+                    const categoryName = p.category && typeof p.category === 'object' ? p.category.name : (p.category || 'Accesorii');
+                    const itemTotal = (item.priceAtPurchase * item.quantity).toFixed(2);
+
+                    return `
+                    <div class="cart-item" id="cart-item-${item.id}">
+                        <img class="cart-item-image" src="${imgUrl}" alt="${p.name}"
+                             onclick="goToProduct(${p.id})" loading="lazy" onerror="this.src='https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine'">
+                        <div class="cart-item-body">
+                            <div class="cart-item-info">
+                                <div class="cart-item-category">${categoryName}</div>
+                                <div class="cart-item-name" onclick="goToProduct(${p.id})">${p.name}</div>
+                                <div class="cart-item-quantity">${item.priceAtPurchase} lei/buc</div>
+                                <div class="qty-controls">
+                                    <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                                    <div class="qty-display">${item.quantity}</div>
+                                    <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                                </div>
+                            </div>
+                            <div class="cart-item-right">
+                                <div class="cart-item-price">${itemTotal} <span class="currency">lei</span></div>
+                                <button class="remove-item-btn" onclick="removeItem(${item.id})" title="Elimina din cos">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+
+                summaryDiv.style.display = 'block';
+                document.getElementById('summaryCount').textContent = totalItems + (totalItems === 1 ? ' produs' : ' produse');
+                const totalEl = document.getElementById('summaryTotal');
+                totalEl.setAttribute('data-raw', cartOrder.totalAmount.toFixed(2));
+                totalEl.innerHTML = `${cartOrder.totalAmount.toFixed(2)} <span class="currency">lei</span>`;
+
+                updateDeliveryCost();
+                if (!map) initMap();
+
+            } catch (err) {
+                console.error('Eroare la încărcarea coșului:', err);
+                document.getElementById('cartItems').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">⚠️</div>
+                    <h3>Eroare de conexiune</h3>
+                    <p>Serverul nu răspunde. Verifică dacă aplicația Spring Boot rulează.</p>
+                    <a href="index.html" class="browse-btn">← Înapoi la magazin</a>
+                </div>
+            `;
+            }
+        }
+
+        async function updateQuantity(itemId, newQty) {
+            if (newQty < 1) return;
+            try {
+                const res = await fetch(`http://localhost:8080/api/orders/item/${itemId}/quantity`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quantity: newQty })
+                });
+                if (res.ok) {
+                    loadCart();
+                } else {
+                    showToast('Eroare la actualizarea cantitatii!', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function removeItem(itemId) {
+            try {
+                const card = document.getElementById(`cart-item-${itemId}`);
+                if (card) {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(40px)';
+                }
+
+                const res = await fetch(`http://localhost:8080/api/orders/item/${itemId}`, {
+                    method: 'DELETE'
+                });
+
+                if (res.ok) {
+                    showToast('Produs eliminat din coș');
+                    setTimeout(() => loadCart(), 350);
+                } else {
+                    showToast('Eroare la ștergere!', 'error');
+                    if (card) { card.style.opacity = '1'; card.style.transform = 'none'; }
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        let selectedAddressId = null;
+        let editingAddressId = null;
+        let selectedPayment = 'CARD';
+        let selectedDeliveryMethod = 'CURIER_STANDARD';
+        let selectedSavedCardId = null;
+        let deliveryCost = 0;
+        let map = null;
+        let mapMarker = null;
+
+        function selectPayment(method, el) {
+            selectedPayment = method;
+            selectedSavedCardId = null;
+            document.querySelectorAll('#paymentOptions .option-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+
+            const cardForm = document.getElementById('cardDetailsForm');
+            const transferForm = document.getElementById('transferDetailsForm');
+
+            cardForm.classList.remove('visible');
+            transferForm.classList.remove('visible');
+
+            if (method === 'CARD') {
+                cardForm.classList.add('visible');
+                loadSavedCards();
+            } else if (method === 'TRANSFER_BANCAR') {
+                transferForm.classList.add('visible');
+            }
+        }
+
+        async function loadSavedCards() {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) return;
+            const user = JSON.parse(userData);
+            try {
+                const res = await fetch(`http://localhost:8080/api/cards/user/${user.id}`);
+                const cards = await res.json();
+                const container = document.getElementById('savedCardsList');
+                const divider = document.getElementById('newCardDivider');
+
+                if (cards && cards.length > 0) {
+                    divider.style.display = 'block';
+                    container.innerHTML = cards.map(c => {
+                        const brandClass = (c.cardBrand || 'CARD').toLowerCase();
+                        const isSelected = selectedSavedCardId === c.id;
+                        return `<div class="saved-card-item ${isSelected ? 'selected' : ''}" onclick="selectSavedCard(${c.id})">
+                            <div class="option-radio"><div class="option-radio-inner"></div></div>
+                            <div class="saved-card-brand ${brandClass}">${c.cardBrand || 'CARD'}</div>
+                            <div>
+                                <div class="saved-card-number">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; ${c.cardNumberLast4}</div>
+                                <div class="saved-card-meta">${c.cardHolder} | Exp: ${c.cardExpiry}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = '';
+                    divider.style.display = 'none';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function selectSavedCard(cardId) {
+            selectedSavedCardId = cardId;
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('cardExpiry').value = '';
+            document.getElementById('cardCvv').value = '';
+            document.getElementById('cardHolder').value = '';
+            loadSavedCards(); // re-render to show selected
+            showToast('Card selectat!');
+        }
+
+        function formatCardNumber(input) {
+            let val = input.value.replace(/\D/g, '').substring(0, 16);
+            input.value = val.replace(/(\d{4})(?=\d)/g, '$1 ');
+        }
+
+        function formatExpiry(input) {
+            let val = input.value.replace(/\D/g, '').substring(0, 4);
+            if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
+            input.value = val;
+        }
+
+        function selectDelivery(method, el) {
+            selectedDeliveryMethod = method;
+            document.querySelectorAll('#deliveryOptions .option-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            updateDeliveryCost();
+        }
+
+        function updateDeliveryCost() {
+            const totalEl = document.getElementById('summaryTotal');
+            const rawTotal = parseFloat(totalEl.getAttribute('data-raw') || '0');
+
+            if (selectedDeliveryMethod === 'CURIER_EXPRESS') {
+                deliveryCost = 29.99;
+            } else {
+                deliveryCost = rawTotal >= 500 ? 0 : 19.99;
+            }
+
+            const stdPrice = document.getElementById('standardPrice');
+            if (stdPrice) {
+                stdPrice.textContent = rawTotal >= 500 ? 'Gratuit' : '19.99 lei';
+                stdPrice.className = rawTotal >= 500 ? 'option-price' : 'option-price paid';
+            }
+
+            let deliveryRow = document.getElementById('deliveryCostRow');
+            if (!deliveryRow) {
+                const summaryDiv = document.querySelector('.cart-summary');
+                const totalRow = document.querySelector('.summary-row.total');
+                deliveryRow = document.createElement('div');
+                deliveryRow.className = 'summary-row delivery';
+                deliveryRow.id = 'deliveryCostRow';
+                summaryDiv.insertBefore(deliveryRow, totalRow);
+            }
+            deliveryRow.innerHTML = `<span class="label">Cost livrare</span><span class="value">${deliveryCost === 0 ? 'Gratuit' : deliveryCost.toFixed(2) + ' lei'}</span>`;
+
+            const finalTotal = rawTotal + deliveryCost;
+            totalEl.innerHTML = `${finalTotal.toFixed(2)} <span class="currency">lei</span>`;
+        }
+
+        function initMap() {
+            map = L.map('deliveryMap').setView([44.4268, 26.1025], 6); // Romania centru
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+        }
+
+        function updateMapFromAddress(street, city, zipCode) {
+            if (!map) return;
+            const query = `${street || ''}, ${city || ''} ${zipCode || ''}, Romania`;
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`)
+                .then(r => r.json())
+                .then(results => {
+                    if (results && results.length > 0) {
+                        const lat = parseFloat(results[0].lat);
+                        const lon = parseFloat(results[0].lon);
+                        map.setView([lat, lon], 15);
+                        if (mapMarker) map.removeLayer(mapMarker);
+                        mapMarker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(`<b>Adresa de livrare</b><br>${street}, ${city}`)
+                            .openPopup();
+                    }
+                })
+                .catch(() => { });
+        }
+
+        async function confirmOrder() {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) return;
+            const user = JSON.parse(userData);
+
+            const street = document.getElementById('addrStreet').value.trim();
+            const city = document.getElementById('addrCity').value.trim();
+            const zipCode = document.getElementById('addrZip').value.trim();
+
+            let addressId = selectedAddressId;
+
+            if (street && city && !selectedAddressId) {
+                try {
+                    const addrRes = await fetch('http://localhost:8080/api/addresses', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: user.id, street, city, zipCode, isDefault: true })
+                    });
+                    if (addrRes.ok) {
+                        const savedAddr = await addrRes.json();
+                        addressId = savedAddr.id;
+                    }
+                } catch (e) {
+                    console.error('Eroare la salvarea adresei:', e);
+                }
+            }
+
+            if (!addressId && (!street || !city)) {
+                showToast('Selecteaza sau completeaza o adresa de livrare!', 'error');
+                return;
+            }
+
+            if (!selectedPayment) {
+                showToast('Selecteaza o modalitate de plata!', 'error');
+                return;
+            }
+
+            if (selectedPayment === 'CARD' && !selectedSavedCardId) {
+                const cardNum = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                const cardExp = document.getElementById('cardExpiry').value;
+                const cardCvv = document.getElementById('cardCvv').value;
+                const cardName = document.getElementById('cardHolder').value.trim();
+
+                if (cardNum.length !== 16) {
+                    showToast('Introdu un numar de card valid (16 cifre)!', 'error');
+                    return;
+                }
+                if (!/^\d{2}\/\d{2}$/.test(cardExp)) {
+                    showToast('Introdu data expirarii (LL/AA)!', 'error');
+                    return;
+                }
+                if (cardCvv.length !== 3) {
+                    showToast('Introdu codul CVV (3 cifre)!', 'error');
+                    return;
+                }
+                if (!cardName) {
+                    showToast('Introdu numele titularului de card!', 'error');
+                    return;
+                }
+            }
+
+            if (selectedPayment === 'TRANSFER_BANCAR') {
+                const iban = document.getElementById('transferIban').value.trim();
+                const holder = document.getElementById('transferHolder').value.trim();
+                const bank = document.getElementById('transferBank').value.trim();
+
+                if (!iban || iban.length < 15) {
+                    showToast('Introdu un IBAN valid!', 'error');
+                    return;
+                }
+                if (!holder) {
+                    showToast('Introdu numele titularului de cont!', 'error');
+                    return;
+                }
+                if (!bank) {
+                    showToast('Introdu numele bancii!', 'error');
+                    return;
+                }
+            }
+
+            if (!selectedDeliveryMethod) {
+                showToast('Selecteaza o modalitate de livrare!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:8080/api/orders/checkout/${user.id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        addressId: addressId,
+                        paymentMethod: selectedPayment,
+                        deliveryMethod: selectedDeliveryMethod
+                    })
+                });
+                if (res.ok) {
+                    showToast('Comanda a fost plasata cu succes!');
+                    selectedAddressId = null;
+                    setTimeout(() => loadCart(), 1000);
+                } else {
+                    showToast('Eroare la finalizarea comenzii!', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function loadSavedAddresses() {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) return;
+            const user = JSON.parse(userData);
+            try {
+                const res = await fetch(`http://localhost:8080/api/addresses/user/${user.id}`);
+                const addrs = await res.json();
+                const container = document.getElementById('savedAddresses');
+                const orDivider = document.getElementById('orDivider');
+
+                if (addrs && addrs.length > 0) {
+                    orDivider.style.display = 'block';
+                    container.innerHTML = addrs.map(a => {
+                        const isSelected = selectedAddressId === a.id;
+                        return `<div class="address-saved ${isSelected ? 'selected' : ''}" id="addr-${a.id}">
+                        <span class="addr-text" onclick="selectAddress(${a.id}, '${(a.street || '').replace(/'/g, "\\'")}', '${(a.city || '').replace(/'/g, "\\'")}', '${(a.zipCode || '').replace(/'/g, "\\'")}')">
+                            ${isSelected ? '✅' : '📍'} ${a.street}, ${a.city} ${a.zipCode || ''}
+                        </span>
+                        <span class="addr-actions">
+                            <button class="addr-action-btn edit" onclick="event.stopPropagation(); startEditAddress(${a.id}, '${(a.street || '').replace(/'/g, "\\'")}', '${(a.city || '').replace(/'/g, "\\'")}', '${(a.zipCode || '').replace(/'/g, "\\'")}')" title="Editează">✏️</button>
+                            <button class="addr-action-btn delete" onclick="event.stopPropagation(); deleteAddress(${a.id})" title="Șterge">🗑</button>
+                        </span>
+                    </div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = '';
+                    orDivider.style.display = 'none';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function saveNewAddress() {
+            const userData = localStorage.getItem('loggedUser');
+            if (!userData) return;
+            const user = JSON.parse(userData);
+
+            const street = document.getElementById('addrStreet').value.trim();
+            const city = document.getElementById('addrCity').value.trim();
+            const zipCode = document.getElementById('addrZip').value.trim();
+
+            if (!street || !city) {
+                showToast('Completeaza strada si orasul!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:8080/api/addresses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id, street, city, zipCode, isDefault: false })
+                });
+                if (res.ok) {
+                    const savedAddr = await res.json();
+                    selectedAddressId = savedAddr.id;
+                    document.getElementById('addrStreet').value = '';
+                    document.getElementById('addrCity').value = '';
+                    document.getElementById('addrZip').value = '';
+                    loadSavedAddresses();
+                    showToast('Adresa salvata cu succes!');
+                    updateMapFromAddress(street, city, zipCode);
+                } else {
+                    showToast('Eroare la salvarea adresei!', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        function selectAddress(id, street, city, zip) {
+            selectedAddressId = id;
+            document.getElementById('addrStreet').value = '';
+            document.getElementById('addrCity').value = '';
+            document.getElementById('addrZip').value = '';
+            loadSavedAddresses();
+            showToast('Adresa selectata!');
+            updateMapFromAddress(street, city, zip);
+        }
+
+        function startEditAddress(id, street, city, zip) {
+            editingAddressId = id;
+            selectedAddressId = null;
+            document.getElementById('addrStreet').value = street;
+            document.getElementById('addrCity').value = city;
+            document.getElementById('addrZip').value = zip || '';
+            document.getElementById('addrStreet').focus();
+
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            checkoutBtn.textContent = '💾 Salvează adresa editată';
+            checkoutBtn.onclick = saveEditedAddress;
+            showToast('Editează adresa și apasă Salvează', 'success');
+        }
+
+        async function saveEditedAddress() {
+            const street = document.getElementById('addrStreet').value.trim();
+            const city = document.getElementById('addrCity').value.trim();
+            const zipCode = document.getElementById('addrZip').value.trim();
+
+            if (!street || !city) {
+                showToast('Completează strada și orașul!', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:8080/api/addresses/${editingAddressId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ street, city, zipCode })
+                });
+                if (res.ok) {
+                    showToast('✅ Adresă actualizată cu succes!');
+                    selectedAddressId = editingAddressId;
+                    editingAddressId = null;
+                    const checkoutBtn = document.getElementById('checkoutBtn');
+                    checkoutBtn.textContent = 'Finalizează comanda';
+                    checkoutBtn.onclick = confirmOrder;
+                    document.getElementById('addrStreet').value = '';
+                    document.getElementById('addrCity').value = '';
+                    document.getElementById('addrZip').value = '';
+                    loadSavedAddresses();
+                } else {
+                    showToast('Eroare la actualizarea adresei!', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        async function deleteAddress(id) {
+            if (!confirm('Ești sigur că vrei să ștergi această adresă?')) return;
+            try {
+                const res = await fetch(`http://localhost:8080/api/addresses/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    if (selectedAddressId === id) selectedAddressId = null;
+                    showToast('Adresă ștearsă!');
+                    loadSavedAddresses();
+                } else {
+                    showToast('Eroare la ștergere!', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Eroare de conexiune!', 'error');
+            }
+        }
+
+        function goToProduct(id) {
+            window.location.href = `product.html?id=${id}`;
+        }
+
+        function logAccess(actionName) {
+            const userData = localStorage.getItem('loggedUser');
+            const email = userData ? JSON.parse(userData).email : "Vizitator Anonim";
+            fetch('http://localhost:8080/api/logs/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail: email, action: actionName, pageUrl: window.location.href })
+            }).catch(() => { });
+        }
+
+        // ===== INIT =====
+        initAuth();
+        loadCart();
+        loadSavedAddresses();
+        loadSavedCards();
+        logAccess("Vizualizare Coș de Cumpărături");
+    </script>
+</body>
+
+</html>

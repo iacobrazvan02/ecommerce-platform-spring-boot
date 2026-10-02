@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElectroTech - Lista de Dorințe</title>
+  <meta name="description"
+    content="Lista ta de dorințe ElectroTech — produsele pe care le-ai salvat pentru mai târziu.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #0071e3;
+      --accent-hover: #005bb5;
+      --red: #e53935;
+      --red-hover: #c62828;
+      --bg: #000000;
+      --bg-secondary: #111111;
+      --card: #1a1a1a;
+      --card-hover: #222222;
+      --white: #f5f5f7;
+      --text: #f5f5f7;
+      --text-secondary: #86868b;
+      --border: #2d2d2d;
+      --success: #34c759;
+      --danger: #ff3b30;
+      --radius: 12px;
+      --nav-height: 64px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .header {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: var(--red);
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-actions a,
+    .user-actions span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .user-actions a:hover,
+    .user-actions span:hover {
+      color: var(--accent);
+    }
+
+    .btn-register {
+      background: var(--red);
+      color: var(--white) !important;
+      padding: 8px 18px;
+      border-radius: 20px;
+    }
+
+    .logout-btn {
+      color: var(--danger) !important;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .page-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .wishlist-count {
+      background: var(--red);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .clear-all-btn {
+      background: transparent;
+      border: 1.5px solid var(--danger);
+      color: var(--danger);
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .clear-all-btn:hover {
+      background: var(--danger);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 20px;
+    }
+
+    .wishlist-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .wishlist-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      border-color: #444;
+    }
+
+    .wishlist-card .card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: var(--bg-secondary);
+      display: block;
+      cursor: pointer;
+    }
+
+    .card-body {
+      padding: 16px 20px 12px;
+    }
+
+    .card-category {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-name:hover {
+      color: var(--accent);
+    }
+
+    .card-brand {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .card-price .currency {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .stock-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .stock-badge.in-stock {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--success);
+    }
+
+    .stock-badge.out-of-stock {
+      background: rgba(255, 59, 48, 0.15);
+      color: var(--danger);
+    }
+
+    .card-actions {
+      padding: 0 20px 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .cart-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1.5px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cart-btn:hover {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .cart-btn.disabled {
+      border-color: var(--border);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .cart-btn.disabled:hover {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .remove-btn {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remove-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(255, 59, 48, 0.1);
+    }
+
+    .added-date {
+      padding: 0 20px 16px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 100px 20px;
+      grid-column: 1 / -1;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.6;
+    }
+
+    .empty-state h3 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 28px;
+    }
+
+    .empty-state .browse-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .empty-state .browse-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    .footer {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      padding: 30px 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 32px 20px 60px;
+      }
+
+      .page-header h1 {
+        font-size: 28px;
+      }
+
+      .header-inner {
+        padding: 0 20px;
+      }
+
+      .wishlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .wishlist-card {
+      animation: fadeInUp 0.4s ease forwards;
+    }
+
+    .wishlist-card:nth-child(2) {
+      animation-delay: 0.05s;
+    }
+
+    .wishlist-card:nth-child(3) {
+      animation-delay: 0.1s;
+    }
+
+    .wishlist-card:nth-child(4) {
+      animation-delay: 0.15s;
+    }
+
+    .wishlist-card:nth-child(5) {
+      animation-delay: 0.2s;
+    }
+
+    .wishlist-card:nth-child(6) {
+      animation-delay: 0.25s;
+    }
+
+    .wishlist-card:nth-child(7) {
+      animation-delay: 0.3s;
+    }
+
+    .wishlist-card:nth-child(8) {
+      animation-delay: 0.35s;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">Electro<span>Tech</span></a>
+      <div class="user-actions" id="userNav"></div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="page-header" id="pageHeader">
+      <div class="page-header-left">
+        <h1>Lista de dorințe</h1>
+        <span class="wishlist-count" id="wishlistCount" style="display:none">0</span>
+      </div>
+    </div>
+    <div class="wishlist-grid" id="wishlistGrid">
+      <div class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <h3>Se încarcă...</h3>
+        <p>Așteptăm datele de la server.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    © 2026 ElectroTech Store. Toate drepturile rezervate.
+  </footer>
+
+  <script>
+    function initAuth() {
+      const nav = document.getElementById('userNav');
+      const userData = localStorage.getItem('loggedUser');
+      if (userData) {
+        const user = JSON.parse(userData);
+        const userName = user.email.includes('@') ? user.email.split('@')[0] : user.email;
+        let html = `
+          <span style="font-size:13px">Salut, <strong>${userName}</strong></span>
+          <a href="profil.html" style="color: var(--accent); font-weight: 600;">👤 Profil</a>
+          <a href="wishlist.html" style="color: var(--red); font-weight: 600;">Favorite</a>
+          <a href="cart.html">🛒 Coș</a>
+        `;
+        if (user.role === 'ADMIN') {
+          html += `<a href="admin.html" style="color: #ff3b30; font-weight: 700; border: 1px solid #ff3b30; padding: 4px 8px; border-radius: 6px;">⚙️ Admin</a>`;
+        }
+        html += `<span class="logout-btn" onclick="logout()" style="cursor:pointer; color: #ff3b30;">Logout</span>`;
+        nav.innerHTML = html;
+      } else {
+        window.location.href = 'login.html';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedUser');
+      window.location.href = 'index.html';
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    async function loadWishlist() {
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) return;
+      const user = JSON.parse(userData);
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/wishlist/${user.id}`);
+        const wishlistItems = await res.json();
+
+        const grid = document.getElementById('wishlistGrid');
+        const countBadge = document.getElementById('wishlistCount');
+        const header = document.getElementById('pageHeader');
+
+        if (!wishlistItems || wishlistItems.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">♡</div>
+              <h3>Lista de dorințe este goală</h3>
+              <p>Nu ai adăugat încă niciun produs în lista de dorințe.</p>
+              <a href="index.html" class="browse-btn">Explorează produsele →</a>
+            </div>
+          `;
+          countBadge.style.display = 'none';
+          const existingClear = document.getElementById('clearAllBtn');
+          if (existingClear) existingClear.remove();
+          return;
+        }
+
+        countBadge.textContent = wishlistItems.length;
+        countBadge.style.display = 'inline-block';
+
+        if (!document.getElementById('clearAllBtn')) {
+          const clearBtn = document.createElement('button');
+          clearBtn.id = 'clearAllBtn';
+          clearBtn.className = 'clear-all-btn';
+          clearBtn.textContent = '🗑️ Golește lista';
+          clearBtn.onclick = clearAllWishlist;
+          header.appendChild(clearBtn);
+        }
+
+        const imgPromises = wishlistItems.map(item =>
+          fetch(`http://localhost:8080/api/product-images/product/${item.product.id}`)
+            .then(r => r.json()).catch(() => [])
+        );
+        const allImgs = await Promise.all(imgPromises);
+
+        grid.innerHTML = wishlistItems.map((item, idx) => {
+          const p = item.product;
+          const imgUrl = allImgs[idx] && allImgs[idx].length > 0 ? allImgs[idx][0].imageUrl : 'https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine';
+          const categoryName = p.category && typeof p.category === 'object' ? p.category.name : (p.category || 'Accesorii');
+          const inStock = (p.stockQuantity !== undefined ? p.stockQuantity : p.stock) > 0;
+          const addedDate = item.createdAt
+            ? new Date(Array.isArray(item.createdAt)
+              ? new Date(item.createdAt[0], item.createdAt[1] - 1, item.createdAt[2], item.createdAt[3] || 0, item.createdAt[4] || 0)
+              : item.createdAt
+            ).toLocaleDateString('ro-RO')
+            : '';
+
+          return `
+            <div class="wishlist-card" id="wishlist-item-${item.id}">
+              <img class="card-image" src="${imgUrl}" alt="${p.name}" 
+                   onclick="goToProduct(${p.id})" loading="lazy" onerror="this.src='https://placehold.co/400x300/1a1a1a/666?text=Fara+imagine'">
+              <div class="card-body">
+                <div class="card-category">${categoryName}</div>
+                <div class="card-name" onclick="goToProduct(${p.id})">${p.name}</div>
+                <div class="card-brand">Brand: ${p.brand || 'N/A'}</div>
+                <div class="card-footer">
+                  <div class="card-price">${p.price} <span class="currency">lei</span></div>
+                  <span class="stock-badge ${inStock ? 'in-stock' : 'out-of-stock'}">
+                    ${inStock ? '● În stoc' : '● Stoc epuizat'}
+                  </span>
+                </div>
+              </div>
+              <div class="added-date">Adăugat: ${addedDate}</div>
+              <div class="card-actions">
+                <button class="cart-btn ${!inStock ? 'disabled' : ''}"
+                        onclick="${inStock ? `addToCart(${p.id})` : ''}">
+                  ${inStock ? '🛒 Adaugă în coș' : 'Indisponibil'}
+                </button>
+                <button class="remove-btn" onclick="removeFromWishlist(${item.id})" title="Elimină din favorite">
+                  ✕
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error('Eroare la încărcarea wishlist-ului:', err);
+        document.getElementById('wishlistGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <h3>Eroare de conexiune</h3>
+            <p>Serverul nu răspunde. Verifică dacă aplicația Spring Boot rulează.</p>
+            <a href="index.html" class="browse-btn">← Înapoi la magazin</a>
+          </div>
+        `;
+      }
+    }
+
+    async function removeFromWishlist(wishlistId) {
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) return;
+      const user = JSON.parse(userData);
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/wishlist/${wishlistId}?userId=${user.id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          const card = document.getElementById(`wishlist-item-${wishlistId}`);
+          if (card) {
+            card.style.transition = 'all 0.3s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+              loadWishlist();
+            }, 300);
+          }
+          showToast('Produsul a fost eliminat din favorite ✓');
+        } else {
+          showToast('Eroare la ștergere!', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    async function clearAllWishlist() {
+      if (!confirm('Ești sigur ca vrei să golești toată lista de dorințe?')) return;
+
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) return;
+      const user = JSON.parse(userData);
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/wishlist/clear/${user.id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          showToast('Lista de dorințe a fost golită ✓');
+          setTimeout(() => loadWishlist(), 500);
+        } else {
+          showToast('Eroare la golire!', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    async function addToCart(productId) {
+      const userData = localStorage.getItem('loggedUser');
+      if (!userData) { window.location.href = 'login.html'; return; }
+      const user = JSON.parse(userData);
+
+      try {
+        const res = await fetch('http://localhost:8080/api/orders/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, productId, quantity: 1 })
+        });
+        if (res.ok) {
+          showToast('Produs adăugat în coș! 🛒');
+        } else {
+          showToast('Eroare la adăugare în coș!', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Eroare de conexiune!', 'error');
+      }
+    }
+
+    function goToProduct(id) {
+      window.location.href = `product.html?id=${id}`;
+    }
+
+    function logAccess(actionName) {
+      const userData = localStorage.getItem('loggedUser');
+      const email = userData ? JSON.parse(userData).email : "Vizitator Anonim";
+      fetch('http://localhost:8080/api/logs/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: email, action: actionName, pageUrl: window.location.href })
+      }).catch(() => { });
+    }
+
+    initAuth();
+    loadWishlist();
+    logAccess("Vizualizare Lista de Dorințe");
+  </script>
+</body>
+
+</html>
